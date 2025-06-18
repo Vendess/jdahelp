@@ -262,3 +262,14 @@ df_all['high_quality'] = df_all['quality'].apply(high_qual_cat)
 #dtypes
 df.dtypes
 df['col'].dtype
+
+
+#jdaapp
+#jdahelp
+#jdahelp1
+#jdahelp2
+#nehehe
+import requests
+url = "https://raw.githubusercontent.com/Vendess/jdahelp/refs/heads/main/jdahelp.txt"
+response = requests.get(url)
+print(response.text)
