@@ -1,0 +1,300 @@
+import requests
+
+url = "https://a36e-78-98-99-76.ngrok-free.app/chat"  # ← cesta
+
+data = {"message": "request v pythone."}
+
+r = requests.post(url, json=data)
+
+print(r.json()["reply"])
+
+#merge
+def merge_lists(*args):
+    result = []
+    for arg in args:
+        if isinstance(arg, list):
+            result.extend(arg)
+    return result
+    
+#sum
+def sum_numbers(numbers):
+    total = 0
+    for number in numbers:
+        if isinstance(number, (int, float)):
+            total += number
+        else:
+            # raise TypeError(f"Hodnota {number} nie je číslo!")
+            print(f"Preskočená neplatná hodnota: {number}")
+    return total
+ 
+#pasca
+def pascal_triangle(n):
+    triangle = []
+
+    for i in range(n):
+        row = [1]  # každý riadok začína 1
+        if triangle:
+            last_row = triangle[-1]
+            for j in range(1, i):
+                # každý nový prvok je súčet dvoch nad sebou
+                row.append(last_row[j - 1] + last_row[j])
+            row.append(1)  # každý riadok končí 1
+        triangle.append(row)
+
+    return triangle
+    
+#fib
+def fib(n):
+    if n < 0:
+        raise ValueError("n musi byt viac ako 0")
+    if n < 2:
+        return n
+    return fib(n-1) + fib(n-2)
+    
+#reverse
+def reverse_str(s):
+    return s[::-1].upper()
+    
+#count vov
+def count_vovels(s):
+    count = 0
+    for ch in s.lower():
+        if ch in 'aeiouy':
+            count += 1
+    return count
+    
+#first 5 chosen columns
+df_subset = df[['stlpec1', 'stlpec2', 'stlpec3']].head(5)
+
+#filter
+df_subset = df[df['stlpec'] > hodnota]
+
+#drop rows with null in col
+df_dropped = df.dropna(subset=['col'])
+
+#drop dupli
+df_bez_duplikatov = df.drop_duplicates(subset=['meno'])
+
+#fill empty
+df['stlpec'] = df['stlpec'].fillna(val)
+
+#num empty
+df['stlpec'].isna().sum()
+
+#agregacia
+grouped = df.groupby('target')
+df.groupby('kategoria')['predaj'].agg('sum')
+#to nasledne ulozime do my_stats stlpce ktore potrebujeme a spriemerujeme
+my_stats = grouped[['stlpec1', 'stlpec2', 'stlpec3']].mean()
+#category that has max
+my_stats['color_intensity'].idxmax()
+#max value
+my_stats['color_intensity'].max()
+
+#another agre
+stats = df.groupby('class').agg(
+    avg_mass=('mass','mean'),
+    avg_age=('age_years','mean')
+
+#number of rows
+len(wine_df)
+
+#eval
+df.eval("col1 / col2 and col3 < 5")
+
+#apply func
+def categorize_acid(ratio):
+    if ratio < 0.2:
+        return 'low_acid'
+    elif 0.2 <= ratio < 0.35:
+        return 'medium_acid'
+    else:
+        return 'high_acid'
+
+wine_df['acid_cat'] = wine_df['acids_ratio'].apply(categorize_acid)
+
+#value counts
+df['stlpec'].value_counts()
+
+#pivot
+pivot_nieco = df.pivot_table(
+    index='index_stlpec',
+    columns='columns',
+    values='values',
+    aggfunc=['min', 'max']
+)
+
+#piv
+pd.pivot_table(data, index=["sex", "title_short"], values="age", aggfunc=["median", "mean", "min", "max", "count"], margins=True)
+
+#imports
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+%matplotlib inline
+sns.set()
+
+#describe
+df.describe()
+df.describe(include='object')
+
+#info
+df.info()
+
+#mod
+temp = df['stlpec'].mode()[0]
+#df_penguins_filled['sex'] = df_penguins_filled['sex'].fillna(most_common_sex)
+
+#categorize mass func
+def categorize_mass(mass):
+    if pd.isna(mass):
+        return np.nan
+    elif mass < 4:
+        return 'light'
+    elif 4 <= mass < 5:
+        return 'medium'
+    elif mass >= 5:
+        return 'heavy'
+
+df_penguins['mass_group'] = df_penguins['body_mass_kg'].apply(categorize_mass)
+
+#query a sort
+df_penguins.query("species == 'Chinstrap'").sort_values(by="mass_group")
+#quer
+l = data.query("sex == 'male' and title_short == 'rare title'")["age"].hist()
+
+#map
+data["embarked"] = data["embarked"].map({"S": "Southampton", "Q": 'Queenstown', "C": "Cherbourg"})
+data["embarked"].value_counts()  # zobrazíme si rôzne hodnoty po nahradení a ich početnosti
+
+#piv
+ptable = pd.pivot_table(data, index=["sex", "title_short"], values="age", aggfunc="median")
+#pivot
+df_penguins.pivot_table(index="mass_group", columns="species", values="bill_ratio", aggfunc="mean")
+#crosstab
+pd.crosstab(df_penguins['mass_group'], df_penguins['sex'])
+
+#groupby multi
+df_grouped = df.groupby(['stlpec1', 'stlpec2'])
+#zobrazenie priemerne hodnoty zo stlpca1 a stlpca2 kombinacie
+grouped = df_grouped[['pozadovane hodnoty podla stlpec1', 'pozadovane hodnoty podla stlpec2']].mean()
+
+#zobrazovanie
+heaviest = grouped['body_mass_g'].idxmax()
+heaviest_mass = grouped['body_mass_g'].max()
+
+#importy
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+#sns.set(style="darkgrid")
+sns.set()
+%matplotlib inline
+
+#read
+df = pd.read_csv("https://raw.githubusercontent.com/jbrownlee/Datasets/master/daily-min-temperatures.csv")
+
+#datetime easy
+df_temps['Date'] = pd.to_datetime(df_temps['Date'])
+
+#datetime convert hard
+# convert month to str short
+df['month_str'] = df['month'].str.slice(0,3)
+df['date_str'] = df['year'].astype(str) + '-' + df['month_str'] + '-01'
+# str format YYYY-MMM-01
+df['date'] = pd.to_datetime(df['date_str'], format="%Y-%b-%d")
+
+#choose period
+#date as index
+### !!! ### ### !!! ### ### !!! ### ### !!! ### ### !!! ### ### !!! ### 
+df_1985 = df_ts.loc['1985']
+plt.figure(figsize=(18, 6))
+#plt.plot(df_1985.index, df_1985['Temp'], marker='.')
+plt.plot(df_1985.index, df_1985.values, marker='.')
+plt.title('Teploty za 1985')
+plt.ylabel("Teploty")
+plt.xlabel("Obdobie")
+
+#klzavy priemer za poslednych 30, zobrazenie 2 grafov
+df_ts['ma_30'] = df_ts['Temp'].rolling(window=30).mean()
+
+plt.figure(figsize=(18, 6))
+plt.plot(df_ts['Temp'], color="blue", label="Temp")
+plt.plot(df_ts['ma_30'], color="red", label="Klzavy priemer temp")
+plt.title('Moving Average vyhladzovanie')
+plt.legend()
+plt.show()
+
+#exponencialne vyhladzovanie 3 graf
+df_ts['ewm_alpha_0.1'] = df_ts['Temp'].ewm(alpha=0.1).mean()
+
+plt.figure(figsize=(18, 6))
+plt.plot(df_ts['Temp'], color="yellow", label="Temp")
+plt.plot(df_ts['ewm_alpha_0.1'], color="red", label="EWMA (alpha=0.1)")
+plt.plot(df_ts['ma_30'], color="green", label="Rolling avg")
+plt.title('Exponencialne vyhladzovanie')
+plt.legend()
+plt.show()
+
+#shift
+df_ts['diff_1'] = df_ts['Temp'].diff(1)
+df_ts['shift_1'] = df_ts['Temp'].shift(1)
+
+#resid
+resampled_resid = decomp_result.resid.resample('W').mean()  # alebo 'M' pre mesiac
+resampled_resid.plot(title='Reziduá (týždenný priemer)', figsize=(10, 3))
+
+plt.figure(figsize=(10, 3))
+plt.scatter(decomp_result.resid.index, decomp_result.resid, s=2, alpha=0.5)
+plt.title('Reziduá – scatter plot')
+
+#freq daily perioda 365
+ts_data = df_ts['Temp'].asfreq('D')
+ts_dataI = ts_data.interpolate()
+ts_dataD = ts_data = ts_data.dropna()
+
+decomp_result = seasonal_decompose(ts_dataI, model='additive', period=365)
+fig = decomp_result.plot()
+fig.set_size_inches(10,6)
+plt.tight_layout()
+plt.show()
+
+#resampl
+df_monthly = df_ts['Temp'].resample('M').mean()
+df_monthly.plot(marker='o', figsize=(12,4), title='Mesacne priemery teplot')
+plt.show()
+
+#concat join 2 df
+df_all = pd.concat([df_red, df_white], ignore_index=True)
+
+#wines read
+df_red = pd.read_csv("winequality-red.csv", sep=';')
+df_white = pd.read_csv("winequality-white.csv", sep=';')
+df_all = pd.concat([df_red, df_white], ignore_index=True)
+
+#func high_qual_cat
+def high_qual_cat(qual):
+    if pd.isna(qual):
+        return np.nan
+    elif qual > 7:
+        return 1
+    else:
+        return 0
+
+df_all['high_quality'] = df_all['quality'].apply(high_qual_cat)
+
+#dtypes
+df.dtypes
+df['col'].dtype
+
+#intervaly
+df['qcut_interval'] = pd.qcut(df['stlpec'], q=5)
+df_all['alcohol_bin'] = pd.cut(df_all['alcohol'], bins=5)
+#cut s hranicami
+data["fare_ordinal"] = pd.cut(data["fare"], bins=[0, 25, 100, 520], include_lowest=True)
+data["fare_ordinal"].value_counts()
