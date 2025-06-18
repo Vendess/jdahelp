@@ -62,6 +62,9 @@ df_subset = df[df['stlpec'] > hodnota]
 #drop rows with null in col
 df_dropped = df.dropna(subset=['col'])
 
+#drop dupli
+df_bez_duplikatov = df.drop_duplicates(subset=['meno'])
+
 #fill empty
 df['stlpec'] = df['stlpec'].fillna(val)
 
