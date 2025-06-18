@@ -113,14 +113,79 @@ Key v widgetoch: zabezpečí konzistentné správanie pri rerun.
 Expander: udrží hlavný panel prehľadný.
 
 
-
-
-
-
-
-
-
-
 5. Spustanie v datalabe
 streamlit run app.py --browser.serverAddress 0.0.0.0 --server.enableCORS False
 Zmeň pathku v prehliadači: všetko od /lab nahraď /proxy/8501/app kde app je názov app.py
+
+-----------------------------------------------------------------------------------------------------------
+
+Prednáška 11: Pokročilé koncepty v Streamlitu na datasete tips
+1. Ciele prednášky
+Prehĺbiť znalosti o state v Streamlitu: st.session_state pre trvalé ukladanie hodnôt.
+Naučiť sa používať caching (@st.cache_data) pre zrýchlenie načítania.
+Ukázať dynamické stavy a animácie pomocou st.container a st.empty.
+Zoskupiť komponenty do logických blokov a ovládať ich aktualizácie.
+2. Architektúra a stav (state)
+2.1 Script-run model
+Po každej interakcii (kliknutí, posunutí slajdru) sa skript znovu spustí od začiatku.
+Všetky stateful widgety si uchovávajú svoju hodnotu medzi rerun-mi.
+Na explicitné ukladanie premenných medzi behmi slúži st.session_state.
+2.2 Práca so st.session_state
+Inicializácia:
+if 'count' not in st.session_state:
+    st.session_state.count = 0
+Aktualizácia pri interakcii:
+if st.button('Klikni v2'):
+    st.session_state.count += 1
+3. Rozloženie pomocou stĺpcov (st.columns)
+Rozdeľte obsah na viacero vertikálnych blokov:
+col1, col2 = st.columns(2)
+with col1:
+    st.write('Prvý stĺpec')
+with col2:
+    st.write('Druhý stĺpec')
+Príklad paralelných grafov:
+col1, col2 = st.columns(2)
+with col1:
+    st.pyplot(fig_scatter)
+with col2:
+    st.pyplot(fig_bar)
+Metriky vedľa seba:
+colA, colB = st.columns(2)
+with colA:
+    st.metric('Max total_bill', max_val)
+    st.metric('Min total_bill', min_val)
+with colB:
+    st.metric('Avg tip', avg_tip)
+    st.metric('Count', record_count)
+4. Dynamické bloky pomocou st.container a st.empty
+4.1 Container
+Vytvorí logický blok, ktorý sa dá naraz prepísať viacerými widgetmi.
+Simulácia výpočtov:
+progress_container = st.container()
+with progress_container:
+    st.write('Spúšťam výpočty…')
+    progress_text = st.empty()
+    progress_bar = st.progress(0)
+
+for i in range(3):
+    time.sleep(1)
+    with progress_container:
+        progress_text.write(f'Krok {i+1}/3 dokončený')
+        progress_bar.progress((i+1)/3)
+4.2 Placeholder (st.empty)
+Rezervuje presné miesto, ktoré možno priebežne aktualizovať.
+Animovaný scatter:
+scatter_container = st.container()
+scatter_placeholder = scatter_container.empty()
+
+fig, ax = plt.subplots()
+# nastav rozsahy osí...
+
+for i in range(max_pts):
+    ax.scatter(x[i], y[i])
+    scatter_placeholder.pyplot(fig)
+    time.sleep(0.1)
+5. Layout a metriky
+Použite st.container() + st.columns() na elegantné zobrazenie kľúčových metrík.
+Zoskupovanie udrží kód prehľadný a umožní jednoduchú aktualizáciu viacerých prvkov naraz.
