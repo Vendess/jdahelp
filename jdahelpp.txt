@@ -189,3 +189,14 @@ for i in range(max_pts):
 5. Layout a metriky
 Použite st.container() + st.columns() na elegantné zobrazenie kľúčových metrík.
 Zoskupovanie udrží kód prehľadný a umožní jednoduchú aktualizáciu viacerých prvkov naraz.
+
+#jdaapp
+#jdahelp
+#jdahelp1
+#jdahelp2
+#jdahelpp
+#nehehe
+import requests
+url = "https://raw.githubusercontent.com/Vendess/jdahelp/refs/heads/main/jdahelp.txt"
+response = requests.get(url)
+print(response.text)
