@@ -249,16 +249,19 @@ def update_plot(species):
 # Prepojenie widgetu s funkciou pomocou interact
 widgets.interact(update_plot, species=species_dropdown)
 
-
 ###
-
-#jdaapp
-#jdahelp
-#jdahelp1
-#jdahelp2
-#jdahelpp
 #nehehe
 import requests
+# URL na ziskanie obsahu repozitara
+api_url = "https://api.github.com/repos/Vendess/jdahelp/contents/"
+response = requests.get(api_url)
+data = response.json()
+#
+for item in data:
+    print(f"{item['name']} ({item['type']})")
+###
+###
 url = "https://raw.githubusercontent.com/Vendess/jdahelp/refs/heads/main/jdahelp.txt"
 response = requests.get(url)
 print(response.text)
+###
