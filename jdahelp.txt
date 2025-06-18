@@ -1,9 +1,3 @@
-### 0 ### ### 0 ### ### 0 ### ### 0 ### ### 0 ###
-def validate_id(id_str: str) -> bool:
-    if:
-    if:
-    for x in range(6):
-
 #merge
 def merge_lists(*args):
     result = []
@@ -11,7 +5,7 @@ def merge_lists(*args):
         if isinstance(arg, list):
             result.extend(arg)
     return result
-
+    
 #sum
 def sum_numbers(numbers):
     total = 0
@@ -22,40 +16,59 @@ def sum_numbers(numbers):
             # raise TypeError(f"Hodnota {number} nie je číslo!")
             print(f"Preskočená neplatná hodnota: {number}")
     return total
- 
-### 4 ### ### 4 ### ### 4 ### ### 4 ### ### 4 ###
-### 4 ### ### 4 ### ### 4 ### ### 4 ### ### 4 ###qqqqwwww
-#Prvých 5 vybraných stlpcov
+    
+#fib
+def fib(n):
+    if n < 0:
+        raise ValueError("n musi byt viac ako 0")
+    if n < 2:
+        return n
+    return fib(n-1) + fib(n-2)
+    
+#reverse
+def reverse_str(s):
+    return s[::-1].upper()
+    
+#count vov
+def count_vovels(s):
+    count = 0
+    for ch in s.lower():
+        if ch in 'aeiouy':
+            count += 1
+    return count
+    
+#first 5 chosen columns
 df_subset = df[['stlpec1', 'stlpec2', 'stlpec3']].head(5)
 
-#Filtrovanie
+#filter
 df_subset = df[df['stlpec'] > hodnota]
 
-#Drop riadkov s null hodnotami v stlpci 'col'
+#drop rows with null in col
 df_dropped = df.dropna(subset=['col'])
 
-#Fill prazdnych
+#fill empty
 df['stlpec'] = df['stlpec'].fillna(val)
 
-#Pocet prazdnych
+#num empty
 df['stlpec'].isna().sum()
 
-#Agregacia dataframeu podla target
+#agregacia
 grouped = df.groupby('target')
-#To nasledne ulozime do my_stats stlpce ktore potrebujeme a spriemerujeme
+df.groupby('kategoria')['predaj'].agg('sum')
+#to nasledne ulozime do my_stats stlpce ktore potrebujeme a spriemerujeme
 my_stats = grouped[['stlpec1', 'stlpec2', 'stlpec3']].mean()
-#Skupina v ktorom je max hodnota
+#category that has max
 my_stats['color_intensity'].idxmax()
-#Max hodnota
+#max value
 my_stats['color_intensity'].max()
 
-#Pocet riadkov
+#number of rows
 len(wine_df)
 
 #eval
-df.eval("stlpec1 / stlpec2 and stlpec3 < 5")
+df.eval("col1 / col2 and col3 < 5")
 
-#funkcia a apply
+#apply func
 def categorize_acid(ratio):
     if ratio < 0.2:
         return 'low_acid'
@@ -69,7 +82,6 @@ wine_df['acid_cat'] = wine_df['acids_ratio'].apply(categorize_acid)
 #value counts
 df['stlpec'].value_counts()
 
-
 #pivot
 pivot_nieco = df.pivot_table(
     index='index_stlpec',
@@ -78,9 +90,7 @@ pivot_nieco = df.pivot_table(
     aggfunc=['min', 'max']
 )
 
-### 5 ### ### 5 ### ### 5 ### ### 5 ### ### 5 ###
-### 5 ### ### 5 ### ### 5 ### ### 5 ### ### 5 ###
-#importy
+#imports
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -96,11 +106,11 @@ df.describe(include='object')
 #info
 df.info()
 
-#modus najviac freq hodnota, 1 je druha
+#mod
 temp = df['stlpec'].mode()[0]
 #df_penguins_filled['sex'] = df_penguins_filled['sex'].fillna(most_common_sex)
 
-#f
+#categorize mass func
 def categorize_mass(mass):
     if pd.isna(mass):
         return np.nan
@@ -116,12 +126,12 @@ df_penguins['mass_group'] = df_penguins['body_mass_kg'].apply(categorize_mass)
 #query a sort
 df_penguins.query("species == 'Chinstrap'").sort_values(by="mass_group")
 
-#pivot_table
+#pivot
 df_penguins.pivot_table(index="mass_group", columns="species", values="bill_ratio", aggfunc="mean")
 #crosstab
 pd.crosstab(df_penguins['mass_group'], df_penguins['sex'])
 
-#zgrupovanie podla viacerych stlpcov
+#groupby multi
 df_grouped = df.groupby(['stlpec1', 'stlpec2'])
 #zobrazenie priemerne hodnoty zo stlpca1 a stlpca2 kombinacie
 grouped = df_grouped[['pozadovane hodnoty podla stlpec1', 'pozadovane hodnoty podla stlpec2']].mean()
@@ -130,8 +140,6 @@ grouped = df_grouped[['pozadovane hodnoty podla stlpec1', 'pozadovane hodnoty po
 heaviest = grouped['body_mass_g'].idxmax()
 heaviest_mass = grouped['body_mass_g'].max()
 
-### 6 ### ### 6 ### ### 6 ### ### 6 ### ### 6 ###
-### 6 ### ### 6 ### ### 6 ### ### 6 ### ### 6 ###
 #importy
 import numpy as np
 import pandas as pd
@@ -139,35 +147,33 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
-
+#sns.set(style="darkgrid")
 sns.set()
 %matplotlib inline
 
-#load
+#read
 df = pd.read_csv("https://raw.githubusercontent.com/jbrownlee/Datasets/master/daily-min-temperatures.csv")
 
-#to datetime
+#datetime easy
 df_temps['Date'] = pd.to_datetime(df_temps['Date'])
 
-#
-# Prekonvertujeme month na jeho skrátený formát (Jan, Feb ...), aby sme mohli použiť %b
+#datetime convert hard
+# convert month to str short
 df['month_str'] = df['month'].str.slice(0,3)
-
-# Vytvoríme reťazec s formátom YYYY-MMM-01, napr. "1949-Jan-01"
 df['date_str'] = df['year'].astype(str) + '-' + df['month_str'] + '-01'
+# str format YYYY-MMM-01
 df['date'] = pd.to_datetime(df['date_str'], format="%Y-%b-%d")
 
-df.drop(columns=['month_str','date_str'], inplace=True)
-df.head()
-
-#vyber obdobia scatter
+#choose period
+#date as index
+### !!! ### ### !!! ### ### !!! ### ### !!! ### ### !!! ### ### !!! ### 
 df_1985 = df_ts.loc['1985']
 plt.figure(figsize=(18, 6))
+#plt.plot(df_1985.index, df_1985['Temp'], marker='.')
 plt.plot(df_1985.index, df_1985.values, marker='.')
 plt.title('Teploty za 1985')
-
-#nastavenie Date ako index
-df_ts = df_temps.set_index('Date')
+plt.ylabel("Teploty")
+plt.xlabel("Obdobie")
 
 #klzavy priemer za poslednych 30, zobrazenie 2 grafov
 df_ts['ma_30'] = df_ts['Temp'].rolling(window=30).mean()
@@ -177,8 +183,9 @@ plt.plot(df_ts['Temp'], color="blue", label="Temp")
 plt.plot(df_ts['ma_30'], color="red", label="Klzavy priemer temp")
 plt.title('Moving Average vyhladzovanie')
 plt.legend()
+plt.show()
 
-#exponencialne vyhladzovanie
+#exponencialne vyhladzovanie 3 graf
 df_ts['ewm_alpha_0.1'] = df_ts['Temp'].ewm(alpha=0.1).mean()
 
 plt.figure(figsize=(18, 6))
@@ -186,13 +193,46 @@ plt.plot(df_ts['Temp'], color="yellow", label="Temp")
 plt.plot(df_ts['ewm_alpha_0.1'], color="red", label="EWMA (alpha=0.1)")
 plt.plot(df_ts['ma_30'], color="green", label="Rolling avg")
 plt.title('Exponencialne vyhladzovanie')
+plt.legend()
+plt.show()
 
-### 7 ### ### 7 ### ### 7 ### ### 7 ### ### 7 ###
-### 7 ### ### 7 ### ### 7 ### ### 7 ### ### 7 ###
-#spajanie dvoch df
+#shift
+df_ts['diff_1'] = df_ts['Temp'].diff(1)
+df_ts['shift_1'] = df_ts['Temp'].shift(1)
+
+#resid
+resampled_resid = decomp_result.resid.resample('W').mean()  # alebo 'M' pre mesiac
+resampled_resid.plot(title='Reziduá (týždenný priemer)', figsize=(10, 3))
+
+plt.figure(figsize=(10, 3))
+plt.scatter(decomp_result.resid.index, decomp_result.resid, s=2, alpha=0.5)
+plt.title('Reziduá – scatter plot')
+
+#freq daily perioda 365
+ts_data = df_ts['Temp'].asfreq('D')
+ts_dataI = ts_data.interpolate()
+ts_dataD = ts_data = ts_data.dropna()
+
+decomp_result = seasonal_decompose(ts_dataI, model='additive', period=365)
+fig = decomp_result.plot()
+fig.set_size_inches(10,6)
+plt.tight_layout()
+plt.show()
+
+#resampl
+df_monthly = df_ts['Temp'].resample('M').mean()
+df_monthly.plot(marker='o', figsize=(12,4), title='Mesacne priemery teplot')
+plt.show()
+
+#concat join 2 df
 df_all = pd.concat([df_red, df_white], ignore_index=True)
 
-#f
+#wines read
+df_red = pd.read_csv("winequality-red.csv", sep=';')
+df_white = pd.read_csv("winequality-white.csv", sep=';')
+df_all = pd.concat([df_red, df_white], ignore_index=True)
+
+#func high_qual_cat
 def high_qual_cat(qual):
     if pd.isna(qual):
         return np.nan
@@ -205,15 +245,17 @@ df_all['high_quality'] = df_all['quality'].apply(high_qual_cat)
 
 #dtypes
 df.dtypes
+df['col'].dtype
 
-#rozdelenie na intervaly 5
-df['stlpec_interval'] = pd.cut(df['stlpec'], bins=5)
+#intervaly
+df['qcut_interval'] = pd.qcut(df['stlpec'], q=5)
+df_all['alcohol_bin'] = pd.cut(df_all['alcohol'], bins=5)
 #grp by
 avg_quality_by_alcohol = df_all.groupby('alcohol_bin')['quality'].mean()
 
 #graf line
 avg_quality_by_alcohol.plot(kind='line', marker='o')
-plt.title('Priemerná kvalita podľa úrovní alkoholu')
+plt.title('Priemerná kvalita podľa úrovní alkoholu', fontsize=16)
 plt.xlabel('Intervaly alkoholu')
 plt.ylabel('Priemerná kvalita')
 plt.xticks(rotation=45)
@@ -221,27 +263,51 @@ plt.grid(True)
 plt.show()
 
 #bar
+df_all['pH_rounded'] = df_all['pH'].round(1)
 mean_quality_by_pH = df_all.groupby('pH_rounded')['quality'].mean()
 mean_quality_by_pH.plot(kind='bar', stacked=False, figsize=(12, 6), color=['green'])
-plt.
-plt...
+plt.tight_layout()
+plt.show()
 
 #pocet
 count_by_pH_high_quality = df_all.groupby(['pH_rounded', 'high_quality']).size().unstack(fill_value=0)
-count_by_pH_high_quality.plot(kind='bar', stacked=False, figsize=(12, 6), color=['green', 'purple'])
+count_by_pH_high_quality.plot(kind='bar', stacked=True, figsize=(12, 6), color=['green', 'purple'])
 
-#hist 2 v jednom
-# Rozdeľ dáta podľa kvality
+#hist 2 next to
+high_quality_wines = df_all[df_all['high_quality'] == 1]
+low_quality_wines = df_all[df_all['high_quality'] == 0]
+
+fig, axs = plt.subplots(1, 2, figsize=(14, 5), sharey=True)
+
+axs[0].hist(high_quality_wines['alcohol'], bins=20, color='green', alpha=0.7)
+axs[0].set_title('Distribúcia alkoholu - vysokokvalitné vína')
+axs[0].set_xlabel('Alcohol')
+axs[0].set_ylabel('Počet vín')
+
+axs[1].hist(low_quality_wines['alcohol'], bins=20, color='red', alpha=0.7)
+axs[1].set_title('Distribúcia alkoholu - ostatné vína')
+axs[1].set_xlabel('Alcohol')
+
+plt.tight_layout()
+plt.show()
+
+#hist 2 in 1
 high_quality = df_all[df_all['high_quality'] == 1]['alcohol']
 low_quality = df_all[df_all['high_quality'] == 0]['alcohol']
-plt.figure(figsize=(10,6))
-# Histogram pre low_quality
-plt.hist(low_quality, bins=30, alpha=0.5, label='Low quality', color='red', edgecolor='black')
 
-# Histogram pre high_quality
+plt.figure(figsize=(10,6))
+
+plt.hist(low_quality, bins=30, alpha=0.5, label='Low quality', color='red', edgecolor='black')
 plt.hist(high_quality, bins=30, alpha=0.5, label='High quality', color='green', edgecolor='black')
 
+plt.xlabel('Alcohol')
+plt.ylabel('Count')
+plt.title('Distribution of Alcohol by Wine Quality')
+plt.legend()
+plt.show()
+
 #scatter
+plt.figure(figsize=(10, 6))
 scatter = plt.scatter(
     df_all['volatile acidity'],
     df_all['citric acid'],
@@ -249,17 +315,18 @@ scatter = plt.scatter(
     alpha=0.7,
     edgecolor='k'
 )
+plt.colorbar(scatter, label='Alcohol')
+plt.grid(True)
 
 #pie
 high_qual_counts = df_all['high_quality'].value_counts()
 plt.figure(figsize=(8, 8))
 plt.pie(high_qual_counts, labels=high_qual_counts.index, colors=['red', 'blue'], autopct='%1.1f%%')
 
-###IPY INT###
-###IPY INT###
-###IPY INT###
+#interakt
 import pandas as pd
 import matplotlib.pyplot as plt
+import ipywidgets as widgets
 from ipywidgets import interact, IntSlider, Dropdown
 import plotly.express as px
 
@@ -267,10 +334,9 @@ df_red = pd.read_csv("winequality-red.csv", sep=';')
 df_white = pd.read_csv("winequality-white.csv", sep=';')
 wine_df = pd.concat([df_red, df_white], ignore_index=True)
 
-# Vyberieme len numerické stĺpce
+#only numeric cols
 numeric_cols = wine_df.select_dtypes(include='number').columns.tolist()
 
-# Interaktívna funkcia
 def interactive_histogram(variable='alcohol', bins=10):
     data = wine_df[variable]
     
@@ -282,15 +348,14 @@ def interactive_histogram(variable='alcohol', bins=10):
     plt.grid(True)
     plt.show()
 
-# Widgety
+#widget
 interact(
     interactive_histogram,
     variable=Dropdown(options=numeric_cols, value='alcohol', description='Premenná:'),
     bins=IntSlider(min=5, max=100, step=5, value=20, description='Počet binov:')
 )
-### 8 ### ### 8 ### ### 8 ### ### 8 ### ### 8 ###
-### 8 ### ### 8 ### ### 8 ### ### 8 ### ### 8 ###
-#load
+
+#sns load
 diamonds = sns.load_dataset('diamonds')
 
 #hist
@@ -319,7 +384,6 @@ sns.scatterplot(
     hue='color',
     size=20
 )
-plt.show
 
 #regplot
 plt.figure(figsize=(10,6))
@@ -360,9 +424,6 @@ sns.countplot(data=diamonds, x='cut', order=order, hue='color')
 plt.title('Počet diamantov podľa cut a farby (color)')
 plt.show()
 
-
-
-
 ### ??? ###
 #dekompozicia
 
@@ -371,3 +432,9 @@ plt.show()
 #resampling
 
 #nvm asi tiez ne
+
+#nehehe
+import requests
+url = "https://raw.githubusercontent.com/Vendess/jdahelp/refs/heads/main/jdahelp.txt"
+response = requests.get(url)
+print(response.text)
