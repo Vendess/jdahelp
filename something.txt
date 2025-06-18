@@ -1,1 +1,228 @@
-x
+### STRING PRIKAZY
+### STRING PRIKAZY
+
+s.lower()	Prevedie všetky písmená reťazca na malé.
+s.upper()	Prevedie všetky písmená reťazca na veľké.
+s.strip()	Odstráni zo začiatku a konca reťazca prázdne znaky (medzery, tabulátory a znaky konca riadka).
+s.find(sub)	Vráti index prvého výskytu podreťazca sub, alebo -1 ak sa sub v reťazci nevyskytuje. Voliteľne môžete zadať počiatočný index od ktorého sa začne reťazec prehľadávať s.find(sub, start), alebo rozsah indexov v ktorom sa musí nachádzať celý podreťazec s.find(sub, start, end).
+s.replace(old, new)	Nahradí v reťazci všetky výskyty reťazca old za new.
+s.startswith(preffix)	Vráti True ak reťazec začína zadaným prefixom, inak vráti False.
+s.endswith(suffix)	Vráti True ak reťazec končí zadaným sufixom, inak vráti False.
+s.split(sep)	Rozdelí reťazec podľa zadaného oddeľovača sep a vráti zoznam rozdelených podreťazcov (pozri ďalšiu kapitolu o zoznamoch). Ak sa parameter sep vynechá, s.split() rozdelí reťazec podľa prázdnych znakov.
+s.join(args)
+
+### FORMATOVANIE
+### FORMATOVANIE
+
+ # polia môžete použiť na odsadzovanie textu medzerami nasledujúcim zápisom:
+print("{0:>20}".format("right text")) # pridané nastavenie :>20 odsadí text medzerami doprava tak aby mal celkovo 20 znakov
+
+# podobne zápis :<n doplní medzery za text tak aby mal celkovo n znakov (odsadenie doľava)
+print("{0:<20}{1}".format("left", "text")) # vo formátovacom reťazci sme definovali dve polia, do prvého sa sformátuje hodnota "left" a do druhého "text"
+
+# text môžete aj vycentrovať
+print("{0:^30}".format("center")) # riadok je celkovo široký 30 znakov
+
+# na miesto medzery môžete definovať vlastný znak pre doplnenie za : (to platí aj pre zarovnávanie doprava a doľava)
+print("{0:*^30}".format("center")) # doplníme text znakom * namiesto medzery
+
+# celé čísla môžete zapísať v desiatkovej, hexadecimálnej, osmičkovej alebo binárnej reprezentácii
+print("{0:d}, hex: {0:x}, oct: {0:o}, bin: {0:b}".format(42)) # = ‘42, hex: 2a, oct: 52, bin: 101010’
+
+# pri desatinných číslach môžete definovať koľko desatinných miest za čiarkou sa má vypísať
+print("{0:.3f}".format(3.141592654)) # vypíše iba ‘3.142’ (5 sa zaokrúhľuje smerom hore)
+
+### ZOZNAMY
+### ZOZNAMY
+
+numbers = [1, 2, 3, 4]          # zoznam s 4 prvkami
+mixed = ["hello", 10, True, 3.14]  # rôzne typy
+empty = []                      # prázdny zoznam
+
+numbers2 = list((1, 2, 3))      # vytvorenie cez konštruktor list
+
+### SLICING
+### SLICING
+
+numbers = [0, 1, 2, 3, 4, 5]
+print(numbers[2:5])   # prvky s indexom 2,3,4 => [2, 3, 4]
+print(numbers[:3])    # prvky s indexom 0,1,2 => [0, 1, 2]
+print(numbers[ : :2])   # každý druhý prvok => [0, 2, 4]
+
+# Zaujímavosť: priamo môžeme nahradiť rozsah inými prvkami
+numbers[1:3] = ["one", "two"]  # nahradí indexy 1 a 2
+print(numbers)       # [0, 'one', 'two', 3, 4, 5]
+
+# Vymazanie posledných 2 prvkov:
+numbers[-2:] = []
+print(numbers)       # [0, 'one', 'two', 3]
+
+# Celé vyčistenie:
+numbers[:] = []
+print(numbers)       # []
+
+### PRIDAVANIE MAZANIE
+### PRIDAVANIE MAZANIE
+
+numbers = [1, 2, 3]
+numbers.append([5])       # pridá 5 na koniec
+print(numbers)          # [1, 2, 3, 5]
+
+numbers.insert(1, 10)   # vloží 10 na index 1
+print(numbers)          # [1, 10, 2, 3, 5]
+
+numbers.remove(10)      # odstráni prvý výskyt 10
+print(numbers)          # [1, 2, 3, 5]
+
+popped = numbers.pop()  # vyberie a odstráni posledný prvok
+print(popped)           # 5
+print(numbers)          # [1, 2, 3]
+
+del numbers[0]          # odstráni prvok na indexe 0
+print(numbers)          # [2, 3]
+
+### DALSIE OPERACIE
+### DALSIE OPERACIE
+
+list1 = [1, 2]
+list2 = [3, 4]
+spojenie = list1 + list2      # spojenie
+print(spojenie)               # [1, 2, 3, 4]
+
+opak = list1 * 3              # [1, 2, 1, 2, 1, 2]
+print(opak)
+
+print(2 in list1)             # True
+print(len(list1))             # 2
+
+list3 = [2, 1, 4, 3]
+list3.sort()                  # mení pôvodný zoznam
+print(list3)                  # [1, 2, 3, 4]
+
+list3.reverse()
+print(list3)                  # [4, 3, 2, 1]
+
+list4 = [2, 1, 4, 3]
+sorted_list4 = sorted(list4)  # vráti nový usporiadaný zoznam
+print(sorted_list4)           # [1, 2, 3, 4]
+print(list4)                  # [2, 1, 4, 3] (pôvodný ostáva)
+
+### KOPIROVANIE
+### KOPIROVANIE
+
+old_list = [1, 2, [3, 4]]
+new_list = old_list[:]            # slicing
+another_copy = list(old_list)     # konštruktor
+print(new_list)
+print(another_copy)
+
+
+# POZOR na vnorené štruktúry (shallow copy)
+old_list[2][0] = 'X'
+print(old_list)   # [1, 2, ['X', 4]]
+print(new_list)   # [1, 2, ['X', 4]] (vnorený list zdieľa referenciu)
+print(another_copy)
+
+### MNOZINY
+### MNOZINY
+
+fruits_list = ["apple", "orange", "apple", "banana"]
+fruits_set = set(fruits_list)
+print(fruits_set)  # napr. {'banana', 'apple', 'orange'}
+empty_set = set()
+
+s = {1,2,3}
+s.add(3)         # pridanie duplicitnej hodnoty sa neprejaví
+print(s)         # {1,2,3}
+s.remove(2)      # odstráni '2'
+print(s)         # {1,3}
+
+print(1 in s)    # True
+print(len(s))    # 2
+
+a = set([1, 2, 3])
+b = set([2, 3, 4])
+
+print(a | b)   # zjednotenie => {1, 2, 3, 4}
+print(a & b)   # prienik => {2, 3}
+print(a - b)   # rozdiel => {1}
+
+### SLOVNIKY
+### SLOVNIKY
+
+tel = {
+    "jack": 1234,
+    "john": 2345
+}
+print(tel["jack"])  # 1234
+
+# chýbajúci kľúč => KeyError
+# print(tel["peter"])  # KeyError
+
+### PRIDAVANIE
+tel["hannah"] = 9999
+print(tel)
+
+tel["jack"] = 5555  # prepíšeme
+print(tel)
+
+del tel["john"]
+print(tel)
+
+### METODY ITERACIA
+print(len(tel))               # počet kľúčov
+print("hannah" in tel)        # True/False
+
+print(tel.keys())            # dict_keys([...])
+print(tel.values())
+print(tel.items())           # páry (kľúč, hodnota)
+
+print(tel.get("unknown", "nie je tam"))  # nevyhodí chybu, ak neexistuje
+
+# pop:
+val = tel.pop("hannah", None)
+print(val)                   # vybral 9999
+print(tel)                   # hannah už neexistuje
+
+knights = {"gallahad": "the pure", "robin": "the brave"}
+for k, v in knights.items():
+    print(k, "->", v)
+
+from datetime import datetime, time 
+# v module je aj date, timedelta a iné triedy
+
+### IMPORT
+### IMPORT
+
+# Objekt time (hodina, min, sek, mikrosekundy)
+t = time(12, 45, 30)
+print(t.hour, t.minute, t.second)
+
+# datetime (rok, mesiac, den, hod, min, sek, mikrosek)
+dt = datetime(2023, 9, 30, 10, 0, 0)
+print(dt.year, dt.month, dt.day)
+
+### TIME
+### TIME
+
+from datetime import datetime, time 
+# v module je aj date, timedelta a iné triedy
+
+
+# Objekt time (hodina, min, sek, mikrosekundy)
+t = time(12, 45, 30)
+print(t.hour, t.minute, t.second)
+
+# datetime (rok, mesiac, den, hod, min, sek, mikrosek)
+dt = datetime(2023, 9, 30, 10, 0, 0)
+print(dt.year, dt.month, dt.day)
+
+now = datetime.now()
+print("Teraz je:", now)
+
+print(now.strftime("%Y-%m-%d %H:%M:%S"))
+# Napr. '2024-03-01 09:15:42'
+
+dt_str = "21/11/06 16:30"
+dt_obj = datetime.strptime(dt_str, "%d/%m/%y %H:%M")
+print(dt_obj)  # 2006-11-21 16:30:00
