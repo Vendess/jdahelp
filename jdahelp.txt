@@ -16,6 +16,22 @@ def sum_numbers(numbers):
             # raise TypeError(f"Hodnota {number} nie je číslo!")
             print(f"Preskočená neplatná hodnota: {number}")
     return total
+ 
+#pasca
+def pascal_triangle(n):
+    triangle = []
+
+    for i in range(n):
+        row = [1]  # každý riadok začína 1
+        if triangle:
+            last_row = triangle[-1]
+            for j in range(1, i):
+                # každý nový prvok je súčet dvoch nad sebou
+                row.append(last_row[j - 1] + last_row[j])
+            row.append(1)  # každý riadok končí 1
+        triangle.append(row)
+
+    return triangle
     
 #fib
 def fib(n):
@@ -291,6 +307,10 @@ axs[1].set_xlabel('Alcohol')
 plt.tight_layout()
 plt.show()
 
+#joinplot
+sns.jointplot(data=diamonds, x='price', y='carat', kind='scatter/hex', s=10, alpha=0.1)
+plt.show()
+
 #hist 2 in 1
 high_quality = df_all[df_all['high_quality'] == 1]['alcohol']
 low_quality = df_all[df_all['high_quality'] == 0]['alcohol']
@@ -323,6 +343,8 @@ high_qual_counts = df_all['high_quality'].value_counts()
 plt.figure(figsize=(8, 8))
 plt.pie(high_qual_counts, labels=high_qual_counts.index, colors=['red', 'blue'], autopct='%1.1f%%')
 
+
+###
 #interakt
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -354,6 +376,8 @@ interact(
     variable=Dropdown(options=numeric_cols, value='alcohol', description='Premenná:'),
     bins=IntSlider(min=5, max=100, step=5, value=20, description='Počet binov:')
 )
+###
+
 
 #sns load
 diamonds = sns.load_dataset('diamonds')
@@ -363,6 +387,7 @@ sns.displot(
     diamonds['price'],
     kind='hist',
     bins=50,
+    #bins='auto'
     kde=True,
     height=5,
     aspect=2.5,
@@ -370,8 +395,6 @@ sns.displot(
 )
 plt.xticks(np.arange(0, 6, 0.5))
 plt.xticks(rotation=45)
-plt.title('price')
-plt.xlabel('x')
 plt.show()
 
 #scatter
@@ -389,9 +412,6 @@ sns.scatterplot(
 plt.figure(figsize=(10,6))
 sns.regplot(x='carat', y='price', data=diamonds, line_kws={'color': 'red'})
 #sns.regplot(x='carat', y='price', data=diamonds, order=2, #scatter_kws=line_kws={'color': 'red'})
-plt.xlabel('Carat')
-plt.ylabel('Price')
-plt.title('Lineárna regresia: Carat vs Price')
 plt.tight_layout()
 plt.show()
 
@@ -419,19 +439,84 @@ plt.show()
 
 #countplot kategoricke data
 order = ['Fair', 'Good', 'Very Good', 'Premium', 'Ideal']
-# countplot pre cut farebne rozlíšený podľa color
+    #cut podla color
 sns.countplot(data=diamonds, x='cut', order=order, hue='color')
 plt.title('Počet diamantov podľa cut a farby (color)')
 plt.show()
 
-### ??? ###
-#dekompozicia
+#barplot
+sns.barplot(x='cut', y='price', data=diamonds, estimator=np.mean, hue='color', palette='pastel', ci=None)
+plt.legend(bbox_to_anchor=(1.15, 1.02), loc='upper right')
+plt.show()
 
-#nvm asi netreba v 6
+#boxplot
+plt.figure(figsize=(14,6))
+sns.boxplot(
+    data=diamonds,
+    x='price',
+    y='color',
+    hue='cut',
+    order=['D','E','F','G','H','I','J']
+)
 
-#resampling
 
-#nvm asi tiez ne
+###
+#ipy
+import matplotlib.pyplot as plt
+from ipywidgets import interact
+import pandas as pd
+
+df = px.data.iris()
+
+def plot_matplotlib(species='Setosa'):
+    data = df[df['species'] == species]
+
+    plt.figure(figsize=(8, 4))
+    plt.plot(data['petal_length'], data['petal_width'], marker='o', linestyle='None', color='blue')
+    plt.title("Petal length vs width")
+    plt.xlabel('petal_length')
+    plt.ylabel('petal_width')
+    plt.grid(True)
+    plt.show()
+
+interact(plot_matplotlib, species=sorted(df['species'].unique()))
+###
+
+
+###
+import plotly.express as px
+import ipywidgets as widgets
+from IPython.display import display
+
+# Načítame dataset
+df = px.data.iris()
+
+# Vytvoríme dropdown widget na výber druhu
+species_dropdown = widgets.Dropdown(
+    options=df['species'].unique(),
+    description='Druh:',
+    value='setosa'
+)
+
+# Funkcia na aktualizáciu grafu
+def update_plot(species):
+    filtered_df = df[df['species'] == species]
+    fig = px.scatter(
+        filtered_df,
+        x="petal_length",
+        y="petal_width",
+        color="species",
+        title=f"Iris - {species.capitalize()}",
+        hover_data=["sepal_length", "sepal_width"]
+    )
+    fig.show()
+
+# Prepojenie widgetu s funkciou pomocou interact
+widgets.interact(update_plot, species=species_dropdown)
+
+
+###
+
 
 #nehehe
 import requests
