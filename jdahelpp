@@ -1,0 +1,126 @@
+Prednáška 10: Úvod do Streamlitu a stavba prvej aplikácie s datasetom tips
+1. Ciele prednášky
+Pochopiť architektúru Streamlit a princíp tzv. „script-run“ modelu.
+Naučiť sa základné UI komponenty (text, layout, widgety) a best practices.
+Využiť konkrétny dataset: tips z knižnice seaborn.
+Vytvoriť interaktívnu aplikáciu na analýzu účtov (total_bill vs. tip).
+2. Teoretické základy
+V tejto časti sa podrobne pozrieme na hlavné komponenty Streamlitu: layouty a vstupné widgety, ich vlastnosti a spôsoby použitia.
+
+2.1 Layouty (rozloženie prvkov)
+Streamlit poskytuje nástroje na usporiadanie UI komponentov tak, aby bola aplikácia prehľadná a používateľsky príjemná.
+
+st.set_page_config
+
+Nastavuje základné parametre stránky: názov (page_title), layout (wide vs. centered) a východiskový stav sidebaru.
+Použitie:
+st.set_page_config(
+    page_title='Tips Dashboard',
+    layout='wide',           # využíva celú šírku obrazovky
+    initial_sidebar_state='expanded'
+)
+Sidebar (st.sidebar)
+
+Slúži na umiestnenie ovládacích prvkov mimo hlavného obsahu.
+Každý widget môžete volaním .sidebar umiestniť do bočného panelu:
+selected_day = st.sidebar.selectbox('Deň', df['day'].unique())
+V sidebar môžete pridávať nadpisy (st.sidebar.header), text či expandery.
+Columns (st.columns)
+
+Rozdeľuje priestor na zadaný počet vertikálnych stĺpcov.
+Použitie:
+col1, col2 = st.columns(2)
+with col1:
+    st.write('V prvom stĺpci')
+with col2:
+    st.write('V druhom stĺpci')
+Umožňuje paralelné zobrazenie grafov, tabuliek či textu.
+Containers (st.container)
+
+Vytvorí nové logické zoskupenie prvkov, do ktorého môžete dynamicky pridávať obsah.
+Použitie:
+container = st.container()
+container.write('Text v kontejnere')
+container.line_chart(data)
+Expandery (st.expander)
+
+Umožňujú schovať/vykresliť dlhé časti UI, udržiavajú prehľadnosť.
+Použitie:
+with st.expander('Viac informácií'):
+    st.write(df.describe())
+2.2 Vstupné widgety (input)
+Umožňujú používateľovi interagovať s aplikáciou. Každý widget akceptuje vstupné parametre a vracia hodnotu používateľa.
+
+Widget	Parametre	Vrátená hodnota	Využitie
+st.slider	label, min_value, max_value, value, step, key	Int/Float alebo Tuple	Výber číselného rozsahu alebo hodnoty
+st.selectbox	label, options, index, format_func, key	Jedna vybraná možnosť	Výber z ponuky
+st.multiselect	label, options, default, key	Zoznam vybraných	Výber viacerých možností
+st.checkbox	label, value, key	Bool	Zapnúť/vypnúť funkciu
+st.button	label, key	Bool (klik)	Spustenie akcie na klik
+st.text_input	label, value, max_chars, key	String	Textový vstup
+st.date_input	label, value, min_value, max_value, key	datetime.date alebo tuple	Výber dátumu alebo rozsahu dátumov
+st.file_uploader	label, type, accept_multiple_files, key	Uploaded file(s)	Načítanie externého súboru
+Príklady:
+
+Slider pre veľkosť skupiny:
+
+group_size = st.sidebar.slider(
+    'Veľkosť skupiny',
+    min_value=int(df['size'].min()),
+    max_value=int(df['size'].max()),
+    value=(1, 6),
+    step=1,
+    key='size_range'
+)  # vráti tuple (min, max)
+Jednoduchý selectbox:
+
+day = st.selectbox('Vyber deň',
+                   options=['Thur', 'Fri', 'Sat', 'Sun'],
+                   index=0,
+                   key='day_select')
+Multiselect pre metódy:
+
+methods = df['method'].unique()
+selected = st.multiselect('Metódy objavu',
+                           options=methods,
+                           default=methods,
+                           key='method_select')
+Checkbox pre zobrazenie grafu:
+
+show_chart = st.checkbox('Zobraziť graf', value=True, key='show_chart')
+if show_chart:
+    st.pyplot(fig)
+Date input pre výber rozsahu dátumu:
+
+dates = st.date_input(
+    'Rozsah dátumov',
+    value=(df['date'].min(), df['date'].max()),
+    key='date_range'
+)
+2.3 Východzia konfigurácia a best practices
+Vždy definujte st.set_page_config na úplnom začiatku.
+Používajte key pri dynamických widgetoch, aby ste predišli kolíziám.
+Rozdeľte kód na samostatné funkcie: načítanie dát, filtrácia, vykresľovanie.
+Minimalizujte množstvo kódu v hlavnom telese; využívajte contajnery a expandery.
+Cachiovanie: dekorujte len tie funkcie, ktoré skutočne potrebujú ušetriť čas.
+3. Inštalácia a spustenie
+Inštalácia a spustenie Inštalácia a spustenie
+
+pip install streamlit pandas matplotlib seaborn
+streamlit run app10_tips.py
+4. Dodatočné poznámky
+Key v widgetoch: zabezpečí konzistentné správanie pri rerun.
+Expander: udrží hlavný panel prehľadný.
+
+
+
+
+
+
+
+
+
+
+5. Spustanie v datalabe
+streamlit run app.py --browser.serverAddress 0.0.0.0 --server.enableCORS False
+Zmeň pathku v prehliadači: všetko od /lab nahraď /proxy/8501/app kde app je názov app.py
