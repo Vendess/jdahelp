@@ -1,0 +1,9 @@
+import requests
+
+url = "https://a36e-78-98-99-76.ngrok-free.app/chat"  # ← cesta
+
+data = {"message": "request v pythone."}
+
+r = requests.post(url, json=data)
+
+print(r.json()["reply"])
