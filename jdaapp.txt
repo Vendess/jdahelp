@@ -1,3 +1,9 @@
+'''
+5. Spustanie v datalabe
+streamlit run app.py --browser.serverAddress 0.0.0.0 --server.enableCORS False
+Zmeň pathku v prehliadači: všetko od /lab nahraď /proxy/8501/app kde app je názov app.py
+'''
+
 import streamlit as st
 import pandas as pd
 import seaborn as sns
