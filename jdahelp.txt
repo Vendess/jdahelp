@@ -150,6 +150,10 @@ df_penguins['mass_group'] = df_penguins['body_mass_kg'].apply(categorize_mass)
 #query a sort
 df_penguins.query("species == 'Chinstrap'").sort_values(by="mass_group")
 
+#map
+data["embarked"] = data["embarked"].map({"S": "Southampton", "Q": 'Queenstown', "C": "Cherbourg"})
+data["embarked"].value_counts()  # zobrazíme si rôzne hodnoty po nahradení a ich početnosti
+
 #pivot
 df_penguins.pivot_table(index="mass_group", columns="species", values="bill_ratio", aggfunc="mean")
 #crosstab
