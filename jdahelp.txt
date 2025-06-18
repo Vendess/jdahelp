@@ -1,0 +1,373 @@
+### 0 ### ### 0 ### ### 0 ### ### 0 ### ### 0 ###
+def validate_id(id_str: str) -> bool:
+    if:
+    if:
+    for x in range(6):
+
+#merge
+def merge_lists(*args):
+    result = []
+    for arg in args:
+        if isinstance(arg, list):
+            result.extend(arg)
+    return result
+
+#sum
+def sum_numbers(numbers):
+    total = 0
+    for number in numbers:
+        if isinstance(number, (int, float)):
+            total += number
+        else:
+            # raise TypeError(f"Hodnota {number} nie je číslo!")
+            print(f"Preskočená neplatná hodnota: {number}")
+    return total
+ 
+### 4 ### ### 4 ### ### 4 ### ### 4 ### ### 4 ###
+### 4 ### ### 4 ### ### 4 ### ### 4 ### ### 4 ###qqqqwwww
+#Prvých 5 vybraných stlpcov
+df_subset = df[['stlpec1', 'stlpec2', 'stlpec3']].head(5)
+
+#Filtrovanie
+df_subset = df[df['stlpec'] > hodnota]
+
+#Drop riadkov s null hodnotami v stlpci 'col'
+df_dropped = df.dropna(subset=['col'])
+
+#Fill prazdnych
+df['stlpec'] = df['stlpec'].fillna(val)
+
+#Pocet prazdnych
+df['stlpec'].isna().sum()
+
+#Agregacia dataframeu podla target
+grouped = df.groupby('target')
+#To nasledne ulozime do my_stats stlpce ktore potrebujeme a spriemerujeme
+my_stats = grouped[['stlpec1', 'stlpec2', 'stlpec3']].mean()
+#Skupina v ktorom je max hodnota
+my_stats['color_intensity'].idxmax()
+#Max hodnota
+my_stats['color_intensity'].max()
+
+#Pocet riadkov
+len(wine_df)
+
+#eval
+df.eval("stlpec1 / stlpec2 and stlpec3 < 5")
+
+#funkcia a apply
+def categorize_acid(ratio):
+    if ratio < 0.2:
+        return 'low_acid'
+    elif 0.2 <= ratio < 0.35:
+        return 'medium_acid'
+    else:
+        return 'high_acid'
+
+wine_df['acid_cat'] = wine_df['acids_ratio'].apply(categorize_acid)
+
+#value counts
+df['stlpec'].value_counts()
+
+
+#pivot
+pivot_nieco = df.pivot_table(
+    index='index_stlpec',
+    columns='columns',
+    values='values',
+    aggfunc=['min', 'max']
+)
+
+### 5 ### ### 5 ### ### 5 ### ### 5 ### ### 5 ###
+### 5 ### ### 5 ### ### 5 ### ### 5 ### ### 5 ###
+#importy
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+%matplotlib inline
+sns.set()
+
+#describe
+df.describe()
+df.describe(include='object')
+
+#info
+df.info()
+
+#modus najviac freq hodnota, 1 je druha
+temp = df['stlpec'].mode()[0]
+#df_penguins_filled['sex'] = df_penguins_filled['sex'].fillna(most_common_sex)
+
+#f
+def categorize_mass(mass):
+    if pd.isna(mass):
+        return np.nan
+    elif mass < 4:
+        return 'light'
+    elif 4 <= mass < 5:
+        return 'medium'
+    elif mass >= 5:
+        return 'heavy'
+
+df_penguins['mass_group'] = df_penguins['body_mass_kg'].apply(categorize_mass)
+
+#query a sort
+df_penguins.query("species == 'Chinstrap'").sort_values(by="mass_group")
+
+#pivot_table
+df_penguins.pivot_table(index="mass_group", columns="species", values="bill_ratio", aggfunc="mean")
+#crosstab
+pd.crosstab(df_penguins['mass_group'], df_penguins['sex'])
+
+#zgrupovanie podla viacerych stlpcov
+df_grouped = df.groupby(['stlpec1', 'stlpec2'])
+#zobrazenie priemerne hodnoty zo stlpca1 a stlpca2 kombinacie
+grouped = df_grouped[['pozadovane hodnoty podla stlpec1', 'pozadovane hodnoty podla stlpec2']].mean()
+
+#zobrazovanie
+heaviest = grouped['body_mass_g'].idxmax()
+heaviest_mass = grouped['body_mass_g'].max()
+
+### 6 ### ### 6 ### ### 6 ### ### 6 ### ### 6 ###
+### 6 ### ### 6 ### ### 6 ### ### 6 ### ### 6 ###
+#importy
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+
+sns.set()
+%matplotlib inline
+
+#load
+df = pd.read_csv("https://raw.githubusercontent.com/jbrownlee/Datasets/master/daily-min-temperatures.csv")
+
+#to datetime
+df_temps['Date'] = pd.to_datetime(df_temps['Date'])
+
+#
+# Prekonvertujeme month na jeho skrátený formát (Jan, Feb ...), aby sme mohli použiť %b
+df['month_str'] = df['month'].str.slice(0,3)
+
+# Vytvoríme reťazec s formátom YYYY-MMM-01, napr. "1949-Jan-01"
+df['date_str'] = df['year'].astype(str) + '-' + df['month_str'] + '-01'
+df['date'] = pd.to_datetime(df['date_str'], format="%Y-%b-%d")
+
+df.drop(columns=['month_str','date_str'], inplace=True)
+df.head()
+
+#vyber obdobia scatter
+df_1985 = df_ts.loc['1985']
+plt.figure(figsize=(18, 6))
+plt.plot(df_1985.index, df_1985.values, marker='.')
+plt.title('Teploty za 1985')
+
+#nastavenie Date ako index
+df_ts = df_temps.set_index('Date')
+
+#klzavy priemer za poslednych 30, zobrazenie 2 grafov
+df_ts['ma_30'] = df_ts['Temp'].rolling(window=30).mean()
+
+plt.figure(figsize=(18, 6))
+plt.plot(df_ts['Temp'], color="blue", label="Temp")
+plt.plot(df_ts['ma_30'], color="red", label="Klzavy priemer temp")
+plt.title('Moving Average vyhladzovanie')
+plt.legend()
+
+#exponencialne vyhladzovanie
+df_ts['ewm_alpha_0.1'] = df_ts['Temp'].ewm(alpha=0.1).mean()
+
+plt.figure(figsize=(18, 6))
+plt.plot(df_ts['Temp'], color="yellow", label="Temp")
+plt.plot(df_ts['ewm_alpha_0.1'], color="red", label="EWMA (alpha=0.1)")
+plt.plot(df_ts['ma_30'], color="green", label="Rolling avg")
+plt.title('Exponencialne vyhladzovanie')
+
+### 7 ### ### 7 ### ### 7 ### ### 7 ### ### 7 ###
+### 7 ### ### 7 ### ### 7 ### ### 7 ### ### 7 ###
+#spajanie dvoch df
+df_all = pd.concat([df_red, df_white], ignore_index=True)
+
+#f
+def high_qual_cat(qual):
+    if pd.isna(qual):
+        return np.nan
+    elif qual > 7:
+        return 1
+    else:
+        return 0
+
+df_all['high_quality'] = df_all['quality'].apply(high_qual_cat)
+
+#dtypes
+df.dtypes
+
+#rozdelenie na intervaly 5
+df['stlpec_interval'] = pd.cut(df['stlpec'], bins=5)
+#grp by
+avg_quality_by_alcohol = df_all.groupby('alcohol_bin')['quality'].mean()
+
+#graf line
+avg_quality_by_alcohol.plot(kind='line', marker='o')
+plt.title('Priemerná kvalita podľa úrovní alkoholu')
+plt.xlabel('Intervaly alkoholu')
+plt.ylabel('Priemerná kvalita')
+plt.xticks(rotation=45)
+plt.grid(True)
+plt.show()
+
+#bar
+mean_quality_by_pH = df_all.groupby('pH_rounded')['quality'].mean()
+mean_quality_by_pH.plot(kind='bar', stacked=False, figsize=(12, 6), color=['green'])
+plt.
+plt...
+
+#pocet
+count_by_pH_high_quality = df_all.groupby(['pH_rounded', 'high_quality']).size().unstack(fill_value=0)
+count_by_pH_high_quality.plot(kind='bar', stacked=False, figsize=(12, 6), color=['green', 'purple'])
+
+#hist 2 v jednom
+# Rozdeľ dáta podľa kvality
+high_quality = df_all[df_all['high_quality'] == 1]['alcohol']
+low_quality = df_all[df_all['high_quality'] == 0]['alcohol']
+plt.figure(figsize=(10,6))
+# Histogram pre low_quality
+plt.hist(low_quality, bins=30, alpha=0.5, label='Low quality', color='red', edgecolor='black')
+
+# Histogram pre high_quality
+plt.hist(high_quality, bins=30, alpha=0.5, label='High quality', color='green', edgecolor='black')
+
+#scatter
+scatter = plt.scatter(
+    df_all['volatile acidity'],
+    df_all['citric acid'],
+    c=df_all['alcohol'],
+    alpha=0.7,
+    edgecolor='k'
+)
+
+#pie
+high_qual_counts = df_all['high_quality'].value_counts()
+plt.figure(figsize=(8, 8))
+plt.pie(high_qual_counts, labels=high_qual_counts.index, colors=['red', 'blue'], autopct='%1.1f%%')
+
+###IPY INT###
+###IPY INT###
+###IPY INT###
+import pandas as pd
+import matplotlib.pyplot as plt
+from ipywidgets import interact, IntSlider, Dropdown
+import plotly.express as px
+
+df_red = pd.read_csv("winequality-red.csv", sep=';')
+df_white = pd.read_csv("winequality-white.csv", sep=';')
+wine_df = pd.concat([df_red, df_white], ignore_index=True)
+
+# Vyberieme len numerické stĺpce
+numeric_cols = wine_df.select_dtypes(include='number').columns.tolist()
+
+# Interaktívna funkcia
+def interactive_histogram(variable='alcohol', bins=10):
+    data = wine_df[variable]
+    
+    plt.figure(figsize=(8, 4))
+    plt.hist(data, bins=bins, color='skyblue', edgecolor='black')
+    plt.title(f'Histogram premennnej: {variable}')
+    plt.xlabel(variable)
+    plt.ylabel('Frekvencia')
+    plt.grid(True)
+    plt.show()
+
+# Widgety
+interact(
+    interactive_histogram,
+    variable=Dropdown(options=numeric_cols, value='alcohol', description='Premenná:'),
+    bins=IntSlider(min=5, max=100, step=5, value=20, description='Počet binov:')
+)
+### 8 ### ### 8 ### ### 8 ### ### 8 ### ### 8 ###
+### 8 ### ### 8 ### ### 8 ### ### 8 ### ### 8 ###
+#load
+diamonds = sns.load_dataset('diamonds')
+
+#hist
+sns.displot(
+    diamonds['price'],
+    kind='hist',
+    bins=50,
+    kde=True,
+    height=5,
+    aspect=2.5,
+    color='tomato'
+)
+plt.xticks(np.arange(0, 6, 0.5))
+plt.xticks(rotation=45)
+plt.title('price')
+plt.xlabel('x')
+plt.show()
+
+#scatter
+plt.figure(figsize=(12, 8))
+sns.scatterplot(
+    data=diamonds,
+    x='carat',
+    y='price',
+    alpha=0.5,
+    hue='color',
+    size=20
+)
+plt.show
+
+#regplot
+plt.figure(figsize=(10,6))
+sns.regplot(x='carat', y='price', data=diamonds, line_kws={'color': 'red'})
+#sns.regplot(x='carat', y='price', data=diamonds, order=2, #scatter_kws=line_kws={'color': 'red'})
+plt.xlabel('Carat')
+plt.ylabel('Price')
+plt.title('Lineárna regresia: Carat vs Price')
+plt.tight_layout()
+plt.show()
+
+#joinplot hex/scatter
+sns.jointplot(
+    data=diamonds,
+    x='price',
+    y='carat',
+    alpha=0.8,
+    #kind='scatter'
+    kind='hex'
+)
+plt.show()
+
+#pairplot
+col = ['carat', 'depth', 'table', 'price']
+
+sns.pairplot(
+    diamonds, 
+    vars=col, 
+    hue='color', 
+    plot_kws={'s': 10, 'alpha': 0.3}
+)
+plt.show()
+
+#countplot kategoricke data
+order = ['Fair', 'Good', 'Very Good', 'Premium', 'Ideal']
+# countplot pre cut farebne rozlíšený podľa color
+sns.countplot(data=diamonds, x='cut', order=order, hue='color')
+plt.title('Počet diamantov podľa cut a farby (color)')
+plt.show()
+
+
+
+
+### ??? ###
+#dekompozicia
+
+#nvm asi netreba v 6
+
+#resampling
+
+#nvm asi tiez ne
