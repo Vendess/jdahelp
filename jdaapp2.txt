@@ -1,0 +1,89 @@
+'''
+pip install streamlit pandas matplotlib seaborn
+5. Spustanie v datalabe
+streamlit run app.py --browser.serverAddress 0.0.0.0 --server.enableCORS False
+Zmeň pathku v prehliadači: všetko od /lab nahraď /proxy/8501/app kde app je názov app.py
+#https://datalab.kkui.fei.tuke.sk/jupyter/user/sk549ac/proxy/8501/app
+'''
+
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# 1. Konfigurácia stránky
+st.set_page_config(
+    page_title='Tips Dashboard', layout='wide',
+    initial_sidebar_state='expanded'
+)
+
+st.title("Tips Dashboard 🍽️")
+st.markdown("Interaktívna analýza účtov a tipov z datasetu `tips` (seaborn).")
+
+# 2. Načítanie dát s cachovaním
+@st.cache_data
+def load_data():
+    return sns.load_dataset('tips')
+df = load_data()
+
+# 3. Ukážka dát v expanderi
+with st.expander("Ukážka datasetu"):
+    st.dataframe(df.head())
+
+# 4. Sidebar – vstupy
+st.sidebar.header("Filter")
+
+# Výber dňa
+days = df['day'].unique().tolist()
+selected_days = st.sidebar.multiselect(
+    "Vyber deň:", options=days, default=days, key='day_select'
+)
+
+# Výber času (Lunch/Dinner)
+times = df['time'].unique().tolist()
+selected_time = st.sidebar.selectbox(
+    "Vyber čas:", options=times, index=0, key='time_select'
+)
+
+# Slider pre veľkosť skupiny
+group_size = st.sidebar.slider(
+    "Veľkosť skupiny (počet osôb):", min(df['size']), max(df['size']), (1, max(df['size'])), key='size_range'
+)
+
+# 5. Filtrácia dát
+df_filtered = df[
+    (df.day.isin(selected_days)) &
+    (df.time == selected_time) &
+    (df["size"].between(group_size[0], group_size[1]))
+]
+st.write(f"**Filter count:** {df_filtered.shape[0]} riadkov")
+
+# 6. Vizualizácia scatter plot
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.scatter(df_filtered.total_bill, df_filtered.tip)
+ax.set_xlabel("Total Bill")
+ax.set_ylabel("Tip")
+ax.set_title("Tip vs. Total Bill")
+st.pyplot(fig)
+
+# 7. Bar chart priemernej výšky tipu podľa dňa
+df_bar = (
+    df_filtered.groupby('day')['tip']
+    .mean()
+    .reset_index()
+)
+fig2, ax2 = plt.subplots(figsize=(6, 4))
+ax2.bar(df_bar['day'], df_bar['tip'])
+ax2.set_xlabel("Day")
+ax2.set_ylabel("Average Tip")
+ax2.set_title("Priemerný tip podľa dňa")
+st.pyplot(fig2)
+
+# 8. Stiahnutie dát
+to_download = df_filtered.to_csv(index=False).encode('utf-8')
+st.download_button(
+    "Stiahnuť filtrované dáta CSV",
+    data=to_download,
+    file_name='tips_filtered.csv',
+    mime='text/csv'
+)
