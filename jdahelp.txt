@@ -78,6 +78,11 @@ my_stats['color_intensity'].idxmax()
 #max value
 my_stats['color_intensity'].max()
 
+#another agre
+stats = df.groupby('class').agg(
+    avg_mass=('mass','mean'),
+    avg_age=('age_years','mean')
+
 #number of rows
 len(wine_df)
 
