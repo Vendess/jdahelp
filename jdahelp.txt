@@ -289,6 +289,15 @@ df_all['alcohol_bin'] = pd.cut(df_all['alcohol'], bins=5)
 data["fare_ordinal"] = pd.cut(data["fare"], bins=[0, 25, 100, 520], include_lowest=True)
 data["fare_ordinal"].value_counts()
 
+#diskretizacia
+data["age_ordinal"] = pd.cut(
+    data["age"],
+    bins=[0, 13, 19, 65, data["age"].max()],
+    include_lowest=True,
+    labels=["child", "young", "adult", "old"]
+)
+data["age_ordinal"].value_counts()
+
 #grp by
 avg_quality_by_alcohol = df_all.groupby('alcohol_bin')['quality'].mean()
 
