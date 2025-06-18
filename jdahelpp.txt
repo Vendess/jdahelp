@@ -46,7 +46,7 @@ group_size = st.sidebar.slider(
 df_filtered = df[
     (df.day.isin(selected_days)) &
     (df.time == selected_time) &
-    (df.size.between(group_size[0], group_size[1]))
+    (df['size'].between(group_size[0], group_size[1]))
 ]
 st.write(f"**Filter count:** {df_filtered.shape[0]} riadkov")
 
