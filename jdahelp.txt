@@ -114,6 +114,9 @@ pivot_nieco = df.pivot_table(
     aggfunc=['min', 'max']
 )
 
+#piv
+pd.pivot_table(data, index=["sex", "title_short"], values="age", aggfunc=["median", "mean", "min", "max", "count"], margins=True)
+
 #imports
 import pandas as pd
 import numpy as np
@@ -149,11 +152,15 @@ df_penguins['mass_group'] = df_penguins['body_mass_kg'].apply(categorize_mass)
 
 #query a sort
 df_penguins.query("species == 'Chinstrap'").sort_values(by="mass_group")
+#quer
+l = data.query("sex == 'male' and title_short == 'rare title'")["age"].hist()
 
 #map
 data["embarked"] = data["embarked"].map({"S": "Southampton", "Q": 'Queenstown', "C": "Cherbourg"})
 data["embarked"].value_counts()  # zobrazíme si rôzne hodnoty po nahradení a ich početnosti
 
+#piv
+ptable = pd.pivot_table(data, index=["sex", "title_short"], values="age", aggfunc="median")
 #pivot
 df_penguins.pivot_table(index="mass_group", columns="species", values="bill_ratio", aggfunc="mean")
 #crosstab
