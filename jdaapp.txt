@@ -1,0 +1,103 @@
+import streamlit as st
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+ 
+# ----------------------------------------------
+# Streamlit App: Beijing PM2.5 Data Explorer
+# Dataset: PRSA Data (2010-2014) from UCI ML repository
+# URL: https://archive.ics.uci.edu/ml/machine-learning-databases/00381/PRSA_data_2010.1.1-2014.12.31.csv
+# ----------------------------------------------
+ 
+# Page configuration
+st.set_page_config(page_title="Air Pollution Explorer", layout="wide")
+ 
+@st.cache_data
+def load_data():
+    """
+    Load dataset directly from the UCI repository URL.
+    """
+    url = (
+        "https://archive.ics.uci.edu/ml/machine-learning-databases/00381/"
+        "PRSA_data_2010.1.1-2014.12.31.csv"
+    )
+    df = pd.read_csv(url)
+    # Combine year, month, day, hour into a single datetime column
+    df['date'] = pd.to_datetime(df[['year', 'month', 'day', 'hour']])
+    return df
+ 
+ 
+def main():
+    st.title("🌫️ Air Pollution Data Explorer")
+ 
+    # Load data
+    df = load_data()
+ 
+    # Preview raw data in expander
+    with st.expander("🔍 Ukážka dát"):
+        st.dataframe(df.head())
+ 
+    # Identify numeric columns
+    numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns.tolist()
+    numeric_cols = [col for col in numeric_cols if col not in ['year', 'month', 'day', 'hour', 'No']]
+ 
+    # Sidebar inputs
+    st.sidebar.header("Nastavenia vizualizácie")
+    x_var = st.sidebar.selectbox("X-axis variable", numeric_cols, index=0)
+    y_var = st.sidebar.selectbox("Y-axis variable", numeric_cols, index=1)
+    hist_var = st.sidebar.selectbox("Histogram variable", numeric_cols, index=2)
+ 
+    min_date = df['date'].min().date()
+    max_date = df['date'].max().date()
+    start_date, end_date = st.sidebar.date_input(
+        "Dátumový interval", [min_date, max_date], min_value=min_date, max_value=max_date
+    )
+ 
+    # Filter data by date
+    mask = (df['date'].dt.date >= start_date) & (df['date'].dt.date <= end_date)
+    filtered_df = df.loc[mask]
+ 
+    # Statistics summary in expander
+    with st.expander("📊 Štatistický súhrn", expanded=True):
+        st.write(f"**Počet záznamov:** {len(filtered_df)}")
+        stats = filtered_df[[x_var, y_var, hist_var]].agg(['min', 'max', 'mean', 'median']).T
+        stats.columns = ['Min', 'Max', 'Mean', 'Median']
+        st.table(stats)
+ 
+    # Metrics container
+    metrics_container = st.container()
+    m1, m2, m3 = metrics_container.columns(3)
+    m1.metric("Počet záznamov", len(filtered_df))
+    m2.metric(f"Priemer {x_var}", f"{filtered_df[x_var].mean():.2f}")
+    m3.metric(f"Priemer {y_var}", f"{filtered_df[y_var].mean():.2f}")
+ 
+    # Two-column layout for charts
+    col1, col2 = st.columns(2)
+ 
+    # Scatter plot using seaborn/matplotlib
+    with col1:
+        st.subheader(f"Scatter: {x_var} vs {y_var}")
+        fig1, ax1 = plt.subplots()
+        sns.scatterplot(data=filtered_df, x=x_var, y=y_var, ax=ax1)
+        ax1.set_xlabel(x_var)
+        ax1.set_ylabel(y_var)
+        ax1.tick_params(axis='x', rotation=45)
+        st.pyplot(fig1)
+        plt.close(fig1)
+ 
+    # Histogram using seaborn/matplotlib
+    with col2:
+        st.subheader(f"Histogram of {hist_var}")
+        fig2, ax2 = plt.subplots()
+        sns.histplot(data=filtered_df, x=hist_var, bins=30, ax=ax2)
+        ax2.set_xlabel(hist_var)
+        ax2.set_ylabel('Count')
+        st.pyplot(fig2)
+        plt.close(fig2)
+ 
+    # Footer note
+    st.markdown("---")
+    st.markdown("Data source: UCI Machine Learning Repository – 'Beijing PM2.5 Data'")
+ 
+if __name__ == "__main__":
+    main()
