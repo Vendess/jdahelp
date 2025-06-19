@@ -84,7 +84,7 @@ df['stlpec'].isna().sum()
 #agregacia
 grouped = df.groupby('target')
 df.groupby('kategoria')['predaj'].agg('sum')
-#to nasledne ulozime do my_stats stlpce ktore potrebujeme a spriemerujeme
+
 my_stats = grouped[['stlpec1', 'stlpec2', 'stlpec3']].mean()
 #category that has max
 my_stats['color_intensity'].idxmax()
@@ -98,20 +98,6 @@ stats = df.groupby('class').agg(
 
 #number of rows
 len(wine_df)
-
-#eval
-df.eval("col1 / col2 and col3 < 5")
-
-#apply func
-def categorize_acid(ratio):
-    if ratio < 0.2:
-        return 'low_acid'
-    elif 0.2 <= ratio < 0.35:
-        return 'medium_acid'
-    else:
-        return 'high_acid'
-
-wine_df['acid_cat'] = wine_df['acids_ratio'].apply(categorize_acid)
 
 #value counts
 df['stlpec'].value_counts()
@@ -161,7 +147,7 @@ def categorize_mass(mass):
 df_penguins['mass_group'] = df_penguins['body_mass_kg'].apply(categorize_mass)
 
 #query a sort
-df_penguins.query("species == 'Chinstrap'").sort_values(by="mass_group")
+df_penguins.query("species == 'Chinstrap' and age < 5").sort_values(by="mass_group")
 #quer
 l = data.query("sex == 'male' and title_short == 'rare title'")["age"].hist()
 
@@ -180,10 +166,6 @@ pd.crosstab(df_penguins['mass_group'], df_penguins['sex'])
 df_grouped = df.groupby(['stlpec1', 'stlpec2'])
 #zobrazenie priemerne hodnoty zo stlpca1 a stlpca2 kombinacie
 grouped = df_grouped[['pozadovane hodnoty podla stlpec1', 'pozadovane hodnoty podla stlpec2']].mean()
-
-#zobrazovanie
-heaviest = grouped['body_mass_g'].idxmax()
-heaviest_mass = grouped['body_mass_g'].max()
 
 #importy
 import numpy as np
@@ -229,7 +211,6 @@ plt.plot(df_ts['ma_30'], color="red", label="Klzavy priemer temp")
 plt.title('Moving Average vyhladzovanie')
 plt.legend()
 plt.show()
-
 #exponencialne vyhladzovanie 3 graf
 df_ts['ewm_alpha_0.1'] = df_ts['Temp'].ewm(alpha=0.1).mean()
 
@@ -240,10 +221,6 @@ plt.plot(df_ts['ma_30'], color="green", label="Rolling avg")
 plt.title('Exponencialne vyhladzovanie')
 plt.legend()
 plt.show()
-
-#shift
-df_ts['diff_1'] = df_ts['Temp'].diff(1)
-df_ts['shift_1'] = df_ts['Temp'].shift(1)
 
 #resid
 resampled_resid = decomp_result.resid.resample('W').mean()  # alebo 'M' pre mesiac
@@ -326,10 +303,7 @@ def replace_missing_age(row):
         return age
 
 # aplikujeme funkciu replace_missing_age na každý riadok tabuľky (axis=1, prednastavená hodnota axis=0 by aplikovala funkciu po stĺpcoch)
-# výsledok sú hodnoty age s nahradenými chýbajúcimi hodnotami, ktoré si uložíme do premennej age2
 age2 = data.apply(replace_missing_age, axis=1)
-
-# pre porovnanie si naraz vykreslíme histogram bez nahradenia a po nahradení chýbajúcich hodnôt
 p = plt.hist([age1, age2])
 
 #graf line
@@ -544,7 +518,6 @@ sns.boxplot(
     order=['D','E','F','G','H','I','J']
 )
 
-
 ###
 #ipy
 import matplotlib.pyplot as plt
@@ -566,7 +539,6 @@ def plot_matplotlib(species='Setosa'):
 
 interact(plot_matplotlib, species=sorted(df['species'].unique()))
 ###
-
 
 ###
 import plotly.express as px
@@ -598,7 +570,6 @@ def update_plot(species):
 
 # Prepojenie widgetu s funkciou pomocou interact
 widgets.interact(update_plot, species=species_dropdown)
-
 
 #nehehe
 import requests
