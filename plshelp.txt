@@ -45,6 +45,6 @@ for msg in otazky:
         r = requests.post(url, json={"message": msg}, timeout=10)
         r.raise_for_status()
         reply = r.json().get("reply", "")
-        print(f"\nPythonHelpSearch: {msg}\n JupyterNavigator: {reply}")
+        print(f"\n JupyterNavigator: {reply}")
     except Exception as e:
         print(f"\n Chyba pri otázke: {msg}\n{e}")
