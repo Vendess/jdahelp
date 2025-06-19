@@ -62,7 +62,20 @@ def count_vovels(s):
         if ch in 'aeiouy':
             count += 1
     return count
-    
+
+#extract cabin
+def extract_deck(cabin):
+    """
+    Funkcia, ktorá z označenia kajuty vyextrahuje prvé písmeno (palubu).
+    Ak cabin nie je k dispozícii (nan), vráti nan.
+    """
+    if pd.isna(cabin):
+        return np.nan
+    return cabin[0]  # prvý znak reťazca
+
+data["deck"] = data["cabin"].apply(extract_deck)
+data[["cabin", "deck"]].head(10)
+
 #first 5 chosen columns
 df_subset = df[['stlpec1', 'stlpec2', 'stlpec3']].head(5)
 
@@ -84,7 +97,7 @@ df['stlpec'].isna().sum()
 #agregacia
 grouped = df.groupby('target')
 df.groupby('kategoria')['predaj'].agg('sum')
-#to nasledne ulozime do my_stats stlpce ktore potrebujeme a spriemerujeme
+
 my_stats = grouped[['stlpec1', 'stlpec2', 'stlpec3']].mean()
 #category that has max
 my_stats['color_intensity'].idxmax()
@@ -99,20 +112,6 @@ stats = df.groupby('class').agg(
 #number of rows
 len(wine_df)
 
-#eval
-df.eval("col1 / col2 and col3 < 5")
-
-#apply func
-def categorize_acid(ratio):
-    if ratio < 0.2:
-        return 'low_acid'
-    elif 0.2 <= ratio < 0.35:
-        return 'medium_acid'
-    else:
-        return 'high_acid'
-
-wine_df['acid_cat'] = wine_df['acids_ratio'].apply(categorize_acid)
-
 #value counts
 df['stlpec'].value_counts()
 
@@ -125,7 +124,7 @@ pivot_nieco = df.pivot_table(
 )
 
 #piv
-pd.pivot_table(data, index=["sex", "title_short"], values="age", aggfunc=["median", "mean", "min", "max", "count"], margins=True)
+pd.pivot_table(data, index="Region", values=["Score", "Rank"], aggfunc={"Score": "mean", "Rank": ["min", "max"]}, margins=False)
 
 #imports
 import pandas as pd
@@ -161,7 +160,7 @@ def categorize_mass(mass):
 df_penguins['mass_group'] = df_penguins['body_mass_kg'].apply(categorize_mass)
 
 #query a sort
-df_penguins.query("species == 'Chinstrap'").sort_values(by="mass_group")
+df_penguins.query("species == 'Chinstrap' and age < 5").sort_values(by="mass_group")
 #quer
 l = data.query("sex == 'male' and title_short == 'rare title'")["age"].hist()
 
@@ -175,15 +174,12 @@ ptable = pd.pivot_table(data, index=["sex", "title_short"], values="age", aggfun
 df_penguins.pivot_table(index="mass_group", columns="species", values="bill_ratio", aggfunc="mean")
 #crosstab
 pd.crosstab(df_penguins['mass_group'], df_penguins['sex'])
+pd.crosstab(index=[data["pclass"], data["fare_ordinal"]], columns=data["sex"])
 
 #groupby multi
 df_grouped = df.groupby(['stlpec1', 'stlpec2'])
 #zobrazenie priemerne hodnoty zo stlpca1 a stlpca2 kombinacie
 grouped = df_grouped[['pozadovane hodnoty podla stlpec1', 'pozadovane hodnoty podla stlpec2']].mean()
-
-#zobrazovanie
-heaviest = grouped['body_mass_g'].idxmax()
-heaviest_mass = grouped['body_mass_g'].max()
 
 #importy
 import numpy as np
@@ -229,7 +225,6 @@ plt.plot(df_ts['ma_30'], color="red", label="Klzavy priemer temp")
 plt.title('Moving Average vyhladzovanie')
 plt.legend()
 plt.show()
-
 #exponencialne vyhladzovanie 3 graf
 df_ts['ewm_alpha_0.1'] = df_ts['Temp'].ewm(alpha=0.1).mean()
 
@@ -240,10 +235,6 @@ plt.plot(df_ts['ma_30'], color="green", label="Rolling avg")
 plt.title('Exponencialne vyhladzovanie')
 plt.legend()
 plt.show()
-
-#shift
-df_ts['diff_1'] = df_ts['Temp'].diff(1)
-df_ts['shift_1'] = df_ts['Temp'].shift(1)
 
 #resid
 resampled_resid = decomp_result.resid.resample('W').mean()  # alebo 'M' pre mesiac
@@ -298,3 +289,12 @@ df_all['alcohol_bin'] = pd.cut(df_all['alcohol'], bins=5)
 #cut s hranicami
 data["fare_ordinal"] = pd.cut(data["fare"], bins=[0, 25, 100, 520], include_lowest=True)
 data["fare_ordinal"].value_counts()
+
+#diskretizacia
+data["age_ordinal"] = pd.cut(
+    data["age"],
+    bins=[0, 13, 19, 65, data["age"].max()],
+    include_lowest=True,
+    labels=["child", "young", "adult", "old"]
+)
+data["age_ordinal"].value_counts()
