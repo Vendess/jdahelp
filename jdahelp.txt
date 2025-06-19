@@ -161,6 +161,7 @@ ptable = pd.pivot_table(data, index=["sex", "title_short"], values="age", aggfun
 df_penguins.pivot_table(index="mass_group", columns="species", values="bill_ratio", aggfunc="mean")
 #crosstab
 pd.crosstab(df_penguins['mass_group'], df_penguins['sex'])
+pd.crosstab(index=[data["pclass"], data["fare_ordinal"]], columns=data["sex"])
 
 #groupby multi
 df_grouped = df.groupby(['stlpec1', 'stlpec2'])
