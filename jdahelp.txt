@@ -62,7 +62,20 @@ def count_vovels(s):
         if ch in 'aeiouy':
             count += 1
     return count
-    
+
+#extract cabin
+def extract_deck(cabin):
+    """
+    Funkcia, ktorá z označenia kajuty vyextrahuje prvé písmeno (palubu).
+    Ak cabin nie je k dispozícii (nan), vráti nan.
+    """
+    if pd.isna(cabin):
+        return np.nan
+    return cabin[0]  # prvý znak reťazca
+
+data["deck"] = data["cabin"].apply(extract_deck)
+data[["cabin", "deck"]].head(10)
+
 #first 5 chosen columns
 df_subset = df[['stlpec1', 'stlpec2', 'stlpec3']].head(5)
 
