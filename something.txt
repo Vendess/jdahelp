@@ -226,3 +226,19 @@ print(now.strftime("%Y-%m-%d %H:%M:%S"))
 dt_str = "21/11/06 16:30"
 dt_obj = datetime.strptime(dt_str, "%d/%m/%y %H:%M")
 print(dt_obj)  # 2006-11-21 16:30:00
+
+import matplotlib.pyplot as plt
+
+# Výber len pre survived == 1
+survival_by_pclass = titanic.groupby(['pclass', 'survived']).size().unstack()
+
+# Ak chceme iba preživších (survived == 1)
+survived_counts = survival_by_pclass[1]  # stĺpec 1 = preživší
+
+plt.bar(survived_counts.index, survived_counts.values, color='skyblue', edgecolor='k')
+
+plt.title('Počet preživších podľa triedy')
+plt.xlabel('Trieda (pclass)')
+plt.ylabel('Počet preživších')
+plt.xticks([1, 2, 3])  # voliteľné
+plt.show()
