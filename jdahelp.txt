@@ -111,7 +111,7 @@ pivot_nieco = df.pivot_table(
 )
 
 #piv
-pd.pivot_table(data, index=["sex", "title_short"], values="age", aggfunc=["median", "mean", "min", "max", "count"], margins=True)
+pd.pivot_table(data, index="Region", values=["Score", "Rank"], aggfunc={"Score": "mean", "Rank": ["min", "max"]}, margins=False)
 
 #imports
 import pandas as pd
