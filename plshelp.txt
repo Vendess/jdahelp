@@ -29,3 +29,22 @@ for msg in otazky:
         print(f"\nTy: {msg}\n ChatGPT: {reply}")
     except Exception as e:
         print(f"\n Chyba pri otázke: {msg}\n{e}")
+
+### JUPI
+### JUPI
+
+import requests
+
+url = "https://2321-78-98-99-76.ngrok-free.app/chat" 
+
+otazky = [
+    "volam sa karci bratm"
+]
+for msg in otazky:
+    try:
+        r = requests.post(url, json={"message": msg}, timeout=10)
+        r.raise_for_status()
+        reply = r.json().get("reply", "")
+        print(f"\nPythonHelpSearch: {msg}\n JupyterNavigator: {reply}")
+    except Exception as e:
+        print(f"\n Chyba pri otázke: {msg}\n{e}")
