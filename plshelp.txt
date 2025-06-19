@@ -38,7 +38,7 @@ import requests
 url = "https://2321-78-98-99-76.ngrok-free.app/chat" 
 
 otazky = [
-    "volam sa karci bratm"
+    ""
 ]
 for msg in otazky:
     try:
