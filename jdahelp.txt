@@ -312,21 +312,18 @@ data["age_ordinal"].value_counts()
 avg_quality_by_alcohol = df_all.groupby('alcohol_bin')['quality'].mean()
 
 ### ikd
-### ikd
+ptable = pd.pivot_table(data, index=["sex", "title_short"], values="age", aggfunc="median")
 # do premennej age1 si uložíme iba neprázdne hodnoty age (pôvodné dáta sa nezmenia)
 age1 = data["age"].dropna()  # metóda dropna vráti iba záznamy s neprázdnymi hodnotami
 
-# definujeme si funkciu, s ktorou nahradíme chýbajúce hodnoty veku podľa pohlavia a titulu
-# row bude objekt reprezentujúci jeden riadok v tabuľke
 def replace_missing_age(row):
-    age = row["age"]  # zistíme si vek, pohlavie a titul pasažiera
+    age = row["age"]
     sex = row["sex"]
     title = row["title_short"]
-    # ak je vek chýbajúca hodnota, nahradíme ho mediánom v danej skupine určenej podľa pohlavia a titulu
     if pd.isna(age):
         return ptable["age"][(sex, title)]
     else:
-        return age  # inak vrátime známu hodnotu
+        return age
 
 # aplikujeme funkciu replace_missing_age na každý riadok tabuľky (axis=1, prednastavená hodnota axis=0 by aplikovala funkciu po stĺpcoch)
 # výsledok sú hodnoty age s nahradenými chýbajúcimi hodnotami, ktoré si uložíme do premennej age2
@@ -582,19 +579,16 @@ def update_plot(species):
 widgets.interact(update_plot, species=species_dropdown)
 
 
-###
 #nehehe
 import requests
 # URL na ziskanie obsahu repozitara
 api_url = "https://api.github.com/repos/Vendess/jdahelp/contents/"
 response = requests.get(api_url)
 data = response.json()
-#
+
 for item in data:
     print(f"{item['name']} ({item['type']})")
-###
 ###
 url = "https://raw.githubusercontent.com/Vendess/jdahelp/refs/heads/main/jdahelp.txt"
 response = requests.get(url)
 print(response.text)
-###
