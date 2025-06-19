@@ -159,15 +159,9 @@ st.download_button(
 #     --server.enableCORS False
 # Prístup: /proxy/8501/app
 
-#########
-#########
-#########
+###########################
+###########################
 
-1. Ciele prednášky
-Prehĺbiť znalosti o state v Streamlitu: st.session_state pre trvalé ukladanie hodnôt.
-Naučiť sa používať caching (@st.cache_data) pre zrýchlenie načítania.
-Ukázať dynamické stavy a animácie pomocou st.container a st.empty.
-Zoskupiť komponenty do logických blokov a ovládať ich aktualizácie.
 2. Architektúra a stav (state)
 2.1 Script-run model
 Po každej interakcii (kliknutí, posunutí slajdru) sa skript znovu spustí od začiatku.
