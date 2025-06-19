@@ -1,3 +1,6 @@
+#link1:
+#link2:
+
 import requests
 
 url = "https://a36e-78-98-99-76.ngrok-free.app/chat"  # ← cesta
