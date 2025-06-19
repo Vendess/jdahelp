@@ -16,7 +16,7 @@ print(r.json()["reply"])
 
 import requests
 
-url = "https://2321-78-98-99-76.ngrok-free.app/chat" 
+url = "LINK/chat" 
 
 otazky = [
     "p = plt.hist([age1, age2]) do tohto histogramu chcem x os rozdelit po 5 a nie po 10 pomocou pomocou xticks a range"
@@ -26,6 +26,6 @@ for msg in otazky:
         r = requests.post(url, json={"message": msg}, timeout=10)
         r.raise_for_status()
         reply = r.json().get("reply", "")
-        print(f"\nTy: {msg}\n🤖 ChatGPT: {reply}")
+        print(f"\nTy: {msg}\n ChatGPT: {reply}")
     except Exception as e:
-        print(f"\n❌ Chyba pri otázke: {msg}\n{e}")
+        print(f"\n Chyba pri otázke: {msg}\n{e}")
