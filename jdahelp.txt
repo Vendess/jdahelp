@@ -442,6 +442,27 @@ interact(
 )
 ###
 
+###
+import ipywidgets as widgets
+import matplotlib.pyplot as plt
+from ipywidgets import interact, IntSlider, Dropdown
+gapminder = px.data.gapminder()
+
+def plot_matplotlib(country='Japan'):
+    # Vyfiltrujeme dáta pre vybranú krajinu
+    data = gapminder[gapminder['country'] == country]
+    
+    plt.figure(figsize=(8, 4))
+    plt.plot(data['year'], data['lifeExp'], marker='o', linestyle='-', color='blue')
+    plt.title(f'Trend dĺžky života pre {country}')
+    plt.xlabel('Rok')
+    plt.ylabel('Life Expectancy')
+    plt.grid(True)
+    plt.show()
+
+# Vytvorenie widgetu; parameter `country` sa bude prepájať so zoznamom unikátnych krajín
+interact(plot_matplotlib, country=sorted(gapminder['country'].unique()))
+###
 
 #sns load
 diamonds = sns.load_dataset('diamonds')
