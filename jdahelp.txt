@@ -355,6 +355,7 @@ plt.show()
 count_by_pH_high_quality = df_all.groupby(['pH_rounded', 'high_quality']).size().unstack(fill_value=0)
 count_by_pH_high_quality.plot(kind='bar', stacked=True, figsize=(12, 6), color=['green', 'purple'])
 
+plt.xticks(np.arange(0, data["age"].max() + 1, 5))
 #hist 2 next to
 high_quality_wines = df_all[df_all['high_quality'] == 1]
 low_quality_wines = df_all[df_all['high_quality'] == 0]
