@@ -23,28 +23,9 @@ otazky = [
 ]
 for msg in otazky:
     try:
-        r = requests.post(url, json={"message": msg}, timeout=40)
+        r = requests.post(url, json={"message": msg}, timeout=50)
         r.raise_for_status()
         reply = r.json().get("reply", "")
         print(f"\n JupyterNotebookHelp: {reply}")
     except Exception as e:
         print(f"\n Chyba pri otázke: {msg}\n{e}") 
-
-### JUPI
-### JUPI
-
-import requests
-
-url = "link2" 
-
-otazky = [
-    ""
-]
-for msg in otazky:
-    try:
-        r = requests.post(url, json={"message": msg}, timeout=10)
-        r.raise_for_status()
-        reply = r.json().get("reply", "")
-        print(f"\n JupyterNavigator: {reply}")
-    except Exception as e:
-        print(f"\n Chyba pri otázke: {msg}\n{e}")
