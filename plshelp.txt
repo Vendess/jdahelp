@@ -1,11 +1,11 @@
-#link1:
-#link2:
+#link1: 
+#link2: https://8711-178-40-121-31.ngrok-free.app
 
 import requests
 
-url = "https://a36e-78-98-99-76.ngrok-free.app/chat"  # ← cesta
+url = "https://8711-178-40-121-31.ngrok-free.app/chat"  # ← cesta
 
-data = {"message": "request v pythone."}
+data = {"message": "tvoj request v pythone."}
 
 r = requests.post(url, json=data)
 
@@ -16,7 +16,7 @@ print(r.json()["reply"])
 
 import requests
 
-url = "LINK/chat" 
+url = "link2/chat" 
 
 otazky = [
     "p = plt.hist([age1, age2]) do tohto histogramu chcem x os rozdelit po 5 a nie po 10 pomocou pomocou xticks a range"
@@ -35,7 +35,7 @@ for msg in otazky:
 
 import requests
 
-url = "https://2321-78-98-99-76.ngrok-free.app/chat" 
+url = "link2/chat" 
 
 otazky = [
     ""
