@@ -432,6 +432,67 @@ interact(
 )
 ###
 
+### line int
+import pandas as pd
+import matplotlib.pyplot as plt
+import ipywidgets as widgets
+from ipywidgets import interact, Dropdown
+import plotly.express as px
+
+df = px.data.iris().copy()
+df['day'] = range(1, len(df)+1)  # simulovaný čas
+
+numeric_cols = df.select_dtypes(include='number').columns.tolist()
+numeric_cols.remove('day')  # 'day' bude X-os
+
+def interactive_line(variable='petal_length'):
+    plt.figure(figsize=(10, 5))
+    plt.plot(df['day'], df[variable], marker='o', linestyle='-', color='teal')
+    plt.title(f'Vývoj hodnoty: {variable} v čase (dni)')
+    plt.xlabel('Deň')
+    plt.ylabel(variable)
+    plt.grid(True)
+    plt.show()
+
+interact(
+    interactive_line,
+    variable=Dropdown(options=numeric_cols, value='petal_length', description='Premenná:')
+)
+
+###
+
+### line scat
+import pandas as pd
+import matplotlib.pyplot as plt
+import ipywidgets as widgets
+from ipywidgets import interact, Dropdown
+import plotly.express as px
+
+# Načítanie dát
+df = px.data.iris()
+
+# Len číselné stĺpce
+numeric_cols = df.select_dtypes(include='number').columns.tolist()
+
+# Definícia funkcie pre scatter plot
+def interactive_scatter(x_axis='sepal_width', y_axis='petal_length'):
+    plt.figure(figsize=(8, 5))
+    plt.scatter(df[x_axis], df[y_axis], c='green', edgecolor='black', alpha=0.7)
+    plt.title(f'Scatter plot: {x_axis} vs {y_axis}')
+    plt.xlabel(x_axis)
+    plt.ylabel(y_axis)
+    plt.grid(True)
+    plt.show()
+
+# Interaktívne ovládanie
+interact(
+    interactive_scatter,
+    x_axis=Dropdown(options=numeric_cols, value='sepal_width', description='X os:'),
+    y_axis=Dropdown(options=numeric_cols, value='petal_length', description='Y os:')
+)
+
+###
+
 ###
 import ipywidgets as widgets
 import matplotlib.pyplot as plt
