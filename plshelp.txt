@@ -29,3 +29,5 @@ for msg in otazky:
         print(f"\n JupyterNotebookHelp: {reply}")
     except Exception as e:
         print(f"\n Chyba pri otázke: {msg}\n{e}") 
+
+#bu
