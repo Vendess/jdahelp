@@ -1,0 +1,13 @@
+import requests
+
+url = "https://9aed43be4ddc.ngrok-free.app/chat"
+
+otazky = ["Hey, whats my code:) "]
+for msg in otazky:
+    try:
+        r = requests.post(url, json={"prompt": msg}, timeout=10)
+        r.raise_for_status()
+        reply = r.json().get("response", "")
+        print(f"\n Help: {reply}")
+    except Exception as e:
+        print(f"\n Chyba pri otázke: {msg}\n{e}")
