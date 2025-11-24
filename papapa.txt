@@ -11,3 +11,8 @@ for msg in otazky:
         print(f"\n Help: {reply}")
     except Exception as e:
         print(f"\n Chyba pri otázke: {msg}\n{e}")
+
+###
+url = "https://raw.githubusercontent.com/Vendess/jdahelp/refs/heads/main/jdahelp.txt"
+response = requests.get(url)
+print(response.text)
