@@ -1,0 +1,168 @@
+import pandas as pd 
+import numpy as np 
+import matplotlib.pyplot as plt 
+
+=================================
+=================================
+1 Definovanie premenných X a y
+Vždy si musíme na začiatku po načítanú datasetu definovať predikujúce atribúty a cieľový atribút:
+
+X – predstavuje predikujúci atribút/atribúty
+y – predstavuje cieľový (predikovaný) atribút
+V našom prípade (lineárna regresia):
+V našej úlohe predikujeme plat (Salary) na základe rokov skúseností (YearsExperience).
+
+X = data[["YearsExperience"]]
+y = data["Salary"]
+Keby si chcel pri iných modeloch ako napríklad Random Forest predikovať cieľový atribút pomocou všetkých ostatných atribútov, postup a základný princíp ostáva rovnaký a používa sa zápis, ktorým do premennej X uložíme všetky atribúty okrem cieľového. V kóde to potom môže vyzerať nasledovne:
+
+X = data.drop("Cieľový atribút", axis=1)
+y = data["Cieľový atribút"]
+
+=================================
+=================================
+
+salary = pd.read_csv("Salary_Data.csv")
+
+X = salary[["YearsExperience"]]
+y = salary["Salary"]
+
+=================================
+=================================
+
+2 Rozdelenie dát na trénovaciu a testovaciu množinu
+Druhým krokom je rozdeliť množinu dát na trénovaciu a testovaciu časť, aby sme mohli model natrénovať na trénovacích dátach a následne overiť, ako dobre sa náš model učí na nových dátach.
+
+Praktická implementácia:
+Použijeme 70 % dát na trénovanie a 30 % na testovanie. Môžete však zvoliť aj iné pomery, napríklad 80:20.
+Na rozdelenie používame príkaz train_test_split z knižnice scikit-learn.
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
+Poznámky:
+test_size=0.3 → 30 % dát pôjde do testovacej množiny
+random_state=1 → zabezpečí, že rozdelenie dát bude vždy rovnaké (reprodukovateľné)
+Po rozdelení môžeme overiť rozmery dát:
+X_train.shape, X_test.shape
+Základný princíp ostáva rovnaký pre všetky modely:
+
+X_train, y_train → dáta, na ktorých sa model učí
+X_test, y_test → dáta, na ktorých sa model testuje
+
+=================================
+=================================
+
+# Praktická implementácia
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
+
+X_train.shape, X_test.shape
+
+=================================
+=================================
+
+3 Vytvorenie a natrénovanie modelu
+Tretím krokom je vytvorenie modelu.
+Každý model má svoj VLASTNÝ príkaz na inicializáciu.
+V našom prípade použijeme model Lineárnej regresie z knižnice sklearn.linear_model.
+
+Praktická implementácia:
+Vytvoríme objekt modelu a následne ho natrénujeme (fitujeme) na trénovacích dátach X_train a y_train.
+
+from sklearn.linear_model import LinearRegression
+
+# vytvorenie modelu
+model = LinearRegression()
+
+# trénovanie (fitovanie) modelu na trénovacích dátach
+model.fit(X_train, y_train)
+Poznámka:
+Fitovanie = trénovanie modelu → model sa učí vzťah medzi predikujúcim/predikujúcimi atribútmi a cieľovým atribútom
+Vždy používame na trénovanie modelu trénovacie dáta (X_train, y_train), nikdy testovacie
+
+=================================
+=================================
+
+#Praktická implementácia
+from sklearn.linear_model import LinearRegression
+
+model=LinearRegression()
+model.fit(X_train,y_train)
+
+=================================
+=================================
+
+4 Predikcia hodnôt pomocou vytvoreného modelu
+Po natrénovaní môžeme model použiť na predikciu hodnôt pre nové dáta, napríklad testovaciu množinu.
+
+Praktická implementácia:
+💬 Použijeme trénovaný model na predikciu hodnôt pre testovaciu množinu X_test.
+
+# predikcia hodnôt
+y_pred = model.predict(X_test)
+Poznámka:
+Predikciu vykonávame vždy na dátach, ktoré model ešte nevidel (testovacia množina)
+Hodnoty y_pred môžeme následne použiť na vyhodnotenie presnosti modelu, napríklad pomocou metrik R², MAE alebo MSE
+
+=================================
+=================================
+
+y_pred = model.predict(X_test)
+
+=================================
+=================================
+
+5 Vizualizácia a vyhodnotenie modelu
+Po predikcii hodnôt môžeme vizualizovať porovnanie skutočných a predikovaných hodnôt pomocou scatterplotu a zároveň model vyhodnotiť pomocou metrík ako R² či MAPE.
+
+Praktická implementácia – scatterplot:
+~~~ Porovnanie predikovaných hodnôt s testovacími dátami.
+
+import matplotlib.pyplot as plt
+
+plt.scatter(X_test, y_test, color='green', label='Testing Data')
+plt.plot(X_test, y_pred, color='orange', label='Prediction Line')
+plt.title('Testing Data')
+plt.xlabel('YearsExperience')
+plt.ylabel('Salary')
+plt.legend()
+plt.show()
+Praktická implementácia – vyhodnotenie pomocou metrík:
+
+~~~ Použijeme metriky R² a MAPE. Pre iné typy úloh môžeme využiť aj MSE alebo MAE prípadne všetky. Uvedomte si, že výber vhodných metrík na testovanie závisí od viacerých vecí ako napríklad modelu, typu úlohy, samotného cieľa.
+
+from sklearn.metrics import r2_score, mean_absolute_percentage_error
+
+r2 = r2_score(y_test, y_pred)
+mape = mean_absolute_percentage_error(y_test, y_pred)
+
+print(f"R²: {r2:.4f}")
+print(f"MAPE: {mape:.4f}")
+
+=================================
+=================================
+
+import matplotlib.pyplot as plt
+
+plt.scatter(X_test, y_test, color='green', label='Testing Data')
+plt.plot(X_test, y_pred, color='orange', label='Prediction Line')
+plt.title('Testing Data')
+plt.xlabel('YearsExperience')
+plt.ylabel('Salary')
+plt.legend()
+plt.show()
+
+===
+===
+
+from sklearn.metrics import r2_score, mean_absolute_percentage_error
+
+r2 = r2_score(y_test, y_pred)
+mape = mean_absolute_percentage_error(y_test, y_pred)
+
+print(f"R²: {r2:.4f}")
+print(f"MAPE: {mape:.4f}")
+
+=================================
+=================================
