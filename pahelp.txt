@@ -1,3 +1,11 @@
+***
+url = "https://raw.githubusercontent.com/Vendess/jdahelp/refs/heads/main/jdahelp.txt"
+response = requests.get(url)
+print(response.text)
+***
+
+
+
 import pandas as pd 
 import numpy as np 
 import matplotlib.pyplot as plt 
