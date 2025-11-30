@@ -12,7 +12,7 @@ for msg in otazky:
     except Exception as e:
         print(f"\n Chyba pri otázke: {msg}\n{e}")
 
-
+free
 
 ***
 url = "https://raw.githubusercontent.com/Vendess/jdahelp/refs/heads/main/papapa.txt"
