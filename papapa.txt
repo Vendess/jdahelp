@@ -22,7 +22,7 @@ response = requests.get(url)
 print(response.text)
 ***
 
-// papapa // pareg // paregm // pars // paba // paknn
+// papapa.txt // pareg.txt // paregm.txt // pars.txt // paba.txt // paknn.txt
 
 ### OLD OLD ###
 import requests
