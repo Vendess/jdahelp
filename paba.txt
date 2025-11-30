@@ -1,0 +1,216 @@
+Naivný Bayesovský klasifikátor
+Úlohy:
+1. Použi rovnaké rozdelenie dát na trénovaciu a testovaciu množinu (test_data) ako pri rozhodovacom strome. Budeme pracovať s rovnakým datasetom ako pri Rozhodovacom strome.
+
+2. Vytvor Naivný Bayesovský klasifikátor pre cieľový atribút Treatment.
+Použi len stĺpce conc a uptake ako vstupné atribúty.
+
+3. Predikuj hodnoty pre testovaciu množinu a porovnaj ich s reálnymi hodnotami pomocou kontingenčnej tabuľky (confusion matrix).
+
+4. Vypíš klasifikačný report.
+
+5. Druhá časť úlohy: opäť klasifikuj cieľový atribút Type, no tentokrát sa zamyslíš nad diskretizíciou vstupných atribútov.
+Použi tiež stĺpce conc a uptake, ale najprv navrhni diskretizáciu vstupných atribútov. Diskretizuj aspoň jeden zo vstupných atribútov. 
+Pre pripomenutie, na predošlom cviku sme spomínali ekvidištančnú, ekvifrekvenčnú diskretizáciu a potom diskretizáciu s pevne danými hranicamiú/intervalmi. 
+Skús sa zamyslieť, aký typ by možno mal zmysel v tomto príklade a aký by bol jeho impact na výsledok a presnosť modelu.
+Vypíš výsledky na testovacej množine rovnako ako predtým (kontingenčná tabuľka a Classification Report) a porovnaj s predošlým modelom.
+
+=========================================
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB, CategoricalNB
+from sklearn.preprocessing import KBinsDiscretizer
+from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
+
+=========================================
+
+CO2 = pd.read_csv('CO2.csv')
+
+if 'Plant' in CO2.columns:
+    CO2 = CO2.drop(columns='Plant')
+if 'Unnamed: 0' in CO2.columns:
+    CO2 = CO2.drop(columns='Unnamed: 0')
+
+=========================================
+
+X_treatment = CO2[['conc', 'uptake']]
+y_treatment = CO2['Treatment']
+
+=========================================
+
+X_train_t, X_test_t, y_train_t, y_test_t = train_test_split(
+    X_treatment, y_treatment, test_size=0.3, random_state=42, stratify=y_treatment
+)
+
+=========================================
+
+# 2. Vytvorenie a trénovanie Naivného Bayesovského klasifikátora
+nb_treatment = GaussianNB()
+nb_treatment.fit(X_train_t, y_train_t)
+
+=========================================
+
+# 3. Predikcia a Confusion Matrix
+y_pred_treatment = nb_treatment.predict(X_test_t)
+
+print(f"\nPrvých 10 porovnaní:")
+comparison = pd.DataFrame({
+    'Skutočné': y_test_t.values[:10],
+    'Predikované': y_pred_treatment[:10]
+})
+print(comparison)
+
+=========================================
+
+# Confusion Matrix
+cm_treatment = confusion_matrix(y_test_t, y_pred_treatment)
+print(cm_treatment)
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm_treatment, annot=True, fmt='d', cmap='Blues',
+            xticklabels=nb_treatment.classes_,
+            yticklabels=nb_treatment.classes_)
+plt.xlabel('Predikované')
+plt.ylabel('Skutočné')
+plt.title('Confusion Matrix - Treatment (bez diskretizácie)')
+plt.tight_layout()
+plt.show()
+
+=========================================
+
+# 4. Classification Report
+accuracy_treatment = accuracy_score(y_test_t, y_pred_treatment)
+print(f"\nCelková presnosť: {accuracy_treatment:.4f} ({accuracy_treatment*100:.2f}%)")
+
+print("\n--- CLASSIFICATION REPORT ---")
+report_treatment = classification_report(y_test_t, y_pred_treatment)
+print(report_treatment)
+
+=========================================
+2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+=========================================
+=========================================
+2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+=========================================
+
+# 5. Príprava dát pre Type
+X_type = CO2[['conc', 'uptake']]
+y_type = CO2['Type']
+
+=========================================
+
+# Rozdelenie na train/test
+X_train_type, X_test_type, y_train_type, y_test_type = train_test_split(
+    X_type, y_type, test_size=0.3, random_state=42, stratify=y_type
+)
+
+=========================================
+
+# Diskretizácia
+print("""
+Navrhovaná diskretizácia:
+- CONC: Ekvifrekvenčná diskretizácia (quantile) na 5 intervalov
+  Dôvod: Koncentrácia má široký rozsah hodnôt, chceme rovnomerné 
+  rozdelenie vzoriek do kategórií
+  
+- UPTAKE: Ekvidištančná diskretizácia (uniform) na 4 intervaly
+  Dôvod: Uptake má prirodzené intervaly (nízky, stredný, vysoký, 
+  veľmi vysoký príjem CO2)
+""")
+# Vytvorenie diskretizátorov
+discretizer_conc = KBinsDiscretizer(n_bins=5, encode='ordinal', strategy='quantile')
+discretizer_uptake = KBinsDiscretizer(n_bins=4, encode='ordinal', strategy='uniform')
+
+# Diskretizácia trénovacích dát
+X_train_disc = X_train_type.copy()
+X_train_disc['conc'] = discretizer_conc.fit_transform(X_train_type[['conc']])
+X_train_disc['uptake'] = discretizer_uptake.fit_transform(X_train_type[['uptake']])
+
+# Diskretizácia testovacích dát (použijeme fit z trénovacej množiny!)
+X_test_disc = X_test_type.copy()
+X_test_disc['conc'] = discretizer_conc.transform(X_test_type[['conc']])
+X_test_disc['uptake'] = discretizer_uptake.transform(X_test_type[['uptake']])
+
+print(f"\nPríklad diskretizovaných dát:")
+print(X_train_disc.head(10))
+
+=========================================
+
+# Zobrazenie hraníc intervalov
+print("\nHranice intervalov pre CONC (quantile):")
+for i, edge in enumerate(discretizer_conc.bin_edges_[0]):
+    print(f"  Interval {i}: {edge:.2f}")
+
+print("\nHranice intervalov pre UPTAKE (uniform):")
+for i, edge in enumerate(discretizer_uptake.bin_edges_[0]):
+    print(f"  Interval {i}: {edge:.2f}")
+
+=========================================
+
+# Trénovanie modelu na diskretizovaných dátach
+# Pre diskrétne dáta použijeme CategoricalNB
+nb_type = CategoricalNB()
+nb_type.fit(X_train_disc, y_train_type)
+
+=========================================
+
+# Predikcia
+y_pred_type = nb_type.predict(X_test_disc)
+
+=========================================
+
+print(f"\nPrvých 10 porovnaní:")
+comparison_type = pd.DataFrame({
+    'Skutočné': y_test_type.values[:10],
+    'Predikované': y_pred_type[:10]
+})
+print(comparison_type)
+
+=========================================
+
+# Confusion Matrix
+cm_type = confusion_matrix(y_test_type, y_pred_type)
+print(cm_type)
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm_type, annot=True, fmt='d', cmap='Greens',
+            xticklabels=nb_type.classes_,
+            yticklabels=nb_type.classes_)
+plt.xlabel('Predikované')
+plt.ylabel('Skutočné')
+plt.title('Confusion Matrix - Type (s diskretizáciou)')
+plt.tight_layout()
+plt.show()
+
+=========================================
+
+# Classification Report
+accuracy_type = accuracy_score(y_test_type, y_pred_type)
+print(f"\nCelková presnosť: {accuracy_type:.4f} ({accuracy_type*100:.2f}%)")
+print("\n--- CLASSIFICATION REPORT ---")
+report_type = classification_report(y_test_type, y_pred_type)
+print(report_type)
+
+=========================================
+
+# Pre spravodlivé porovnanie vytvoríme aj model bez diskretizácie pre Type
+nb_type_no_disc = GaussianNB()
+nb_type_no_disc.fit(X_train_type, y_train_type)
+y_pred_type_no_disc = nb_type_no_disc.predict(X_test_type)
+accuracy_type_no_disc = accuracy_score(y_test_type, y_pred_type_no_disc)
+
+=========================================
+
+print("Výsledky modelov:")
+print(f"1. Treatment (bez diskretizácie): {accuracy_treatment*100:.2f}%")
+print(f"2. Type (bez diskretizácie):      {accuracy_type_no_disc*100:.2f}%")
+print(f"3. Type (s diskretizáciou):       {accuracy_type*100:.2f}%")
+
+improvement = accuracy_type - accuracy_type_no_disc
+print(f"\nZlepšenie po diskretizácii: {improvement*100:+.2f}%")
+
+=========================================
