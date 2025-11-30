@@ -1,9 +1,8 @@
 ***
-url = "https://raw.githubusercontent.com/Vendess/jdahelp/refs/heads/main/jdahelp.txt"
+url = "https://raw.githubusercontent.com/Vendess/jdahelp/refs/heads/main/papapa.txt"
 response = requests.get(url)
 print(response.text)
 ***
-
 
 
 import pandas as pd 
@@ -12,6 +11,7 @@ import matplotlib.pyplot as plt
 
 =================================
 =================================
+
 1 Definovanie premenných X a y
 Vždy si musíme na začiatku po načítanú datasetu definovať predikujúce atribúty a cieľový atribút:
 
