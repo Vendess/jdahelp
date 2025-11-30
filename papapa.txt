@@ -1,18 +1,16 @@
 import requests
 
-url = "UPDATE - UPDATE - UPDATE"
+url = "kod kod kod" 
 
-otazky = ["Hey, whats my code:) "]
+otazky = [""" kod """]
 for msg in otazky:
     try:
-        r = requests.post(url, json={"prompt": msg}, timeout=10)
+        r = requests.post(url, json={"prompt": msg}, timeout=40)
         r.raise_for_status()
         reply = r.json().get("response", "")
         print(f"\n Help: {reply}")
     except Exception as e:
         print(f"\n Chyba pri otázke: {msg}\n{e}")
-
-
 
 
 
@@ -23,14 +21,3 @@ print(response.text)
 ***
 
 // papapa.txt // pareg.txt // paregm.txt // pars.txt // paba.txt // paknn.txt
-
-### OLD OLD ###
-import requests
-
-url = "https://a36e-78-98-99-76.ngrok-free.app/chat"
-
-data = {"message": "request v pythone."}
-
-r = requests.post(url, json=data)
-
-print(r.json()["reply"])
