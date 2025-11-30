@@ -1,0 +1,169 @@
+K-najbližších susedov (k-NN) je jedna z najjednoduchších klasifikačných metód, ktorá sa používa na klasifikáciu triedy nového záznamu na základe najbližších k záznamov v trénovacích dátach.
+
+Jednoducho povedané:
+Nový bod sa zaradí do triedy, ktorá je najčastejšia medzi jeho k najbližšími susedmi.
+Metóda nevyžaduje zložité trénovanie – len uloží všetky trénovacie dáta a pri predikcii porovná vzdialenosti.
+
+=================
+
+Úlohy:
+1. Rozdeľ dáta CO2 na trénovaciu a testovaciu množinu v pomere 80 ku 20.
+Použi iba atribúty conc a uptake, cieľový atribút je Treatment.
+
+2. Použi metódu k-NN s nastavenám hodnoty k = 2 na predikciu cieľového atribútu pre testovaciu množinu.
+Výsledky ulož do premennej co2_pred.
+
+3. Porovnaj predikované hodnoty (co2_pred) s reálnymi hodnotami pomocou kontingenčnej tabuľky.
+
+4. Vypočítaj úspešnosť, presnosť, návratnosť a F1-skóre klasifikácie pomocou klasifikačného reportu.
+
+=========================================
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
+from sklearn.preprocessing import StandardScaler
+
+=========================================
+
+CO2 = pd.read_csv('CO2.csv')
+
+if 'Plant' in CO2.columns:
+    CO2 = CO2.drop(columns='Plant')
+if 'Unnamed: 0' in CO2.columns:
+    CO2 = CO2.drop(columns='Unnamed: 0')
+
+=========================================
+
+# 1. Rozdelenie dát na trénovaciu a testovaciu množinu (80:20)
+X = CO2[['conc', 'uptake']]
+y = CO2['Treatment']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+=========================================
+
+# Štandardizácia dát (k-NN je citlivý na mierku atribútov)
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# 2. k-NN model s k=2
+knn_model = KNeighborsClassifier(n_neighbors=2)
+knn_model.fit(X_train_scaled, y_train)
+
+=========================================
+
+# Predikcia na testovacej množine
+co2_pred = knn_model.predict(X_test_scaled)
+
+=========================================
+
+print("\nPorovnanie prvých 10 výsledkov:")
+comparison = pd.DataFrame({
+    'Skutočné': y_test.values[:10],
+    'Predikované': co2_pred[:10]
+})
+print(comparison)
+
+=========================================
+
+# 3. Kontingenčná tabuľka (Confusion Matrix)
+cm = confusion_matrix(y_test, co2_pred)
+print("\nConfusion Matrix:")
+print(cm)
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+            xticklabels=knn_model.classes_,
+            yticklabels=knn_model.classes_)
+plt.xlabel('Predikované')
+plt.ylabel('Skutočné')
+plt.title('Confusion Matrix - k-NN (k=2)')
+plt.tight_layout()
+plt.show()
+
+=========================================
+
+# 4. Klasifikačný report - úspešnosť, presnosť, návratnosť, F1-skóre
+accuracy = accuracy_score(y_test, co2_pred)
+print(f"\nCelková úspešnosť: {accuracy:.4f} ({accuracy*100:.2f}%)")
+
+print("\nClassification Report:")
+print(classification_report(y_test, co2_pred))
+
+# Vizualizácia výsledkov
+plt.figure(figsize=(12, 5))
+
+# Trénovacie dáta
+plt.subplot(1, 2, 1)
+for treatment in y_train.unique():
+    mask = y_train == treatment
+    plt.scatter(X_train_scaled[mask, 0], X_train_scaled[mask, 1], 
+                label=treatment, alpha=0.6, s=80, edgecolors='black')
+plt.xlabel('conc (štandardizované)')
+plt.ylabel('uptake (štandardizované)')
+plt.title('Trénovacie dáta')
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+# Testovacie dáta s predikciami
+plt.subplot(1, 2, 2)
+correct = y_test == co2_pred
+classes = knn_model.classes_
+
+plt.scatter(X_test_scaled[correct, 0], X_test_scaled[correct, 1], 
+            c=['blue' if y == classes[0] else 'orange' for y in y_test[correct]],
+            marker='o', s=80, alpha=0.7, edgecolors='black', label='Správne')
+
+incorrect = y_test != co2_pred
+if incorrect.sum() > 0:
+    plt.scatter(X_test_scaled[incorrect, 0], X_test_scaled[incorrect, 1], 
+                c='red', marker='X', s=120, edgecolors='black', label='Chybné')
+
+plt.xlabel('conc (štandardizované)')
+plt.ylabel('uptake (štandardizované)')
+plt.title('Testovacie dáta - Predikcie')
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+=========================================
+
+# Porovnanie rôznych hodnôt k
+k_values = [1, 2, 3, 5, 7, 10, 15]
+accuracies = []
+
+for k in k_values:
+    knn_temp = KNeighborsClassifier(n_neighbors=k)
+    knn_temp.fit(X_train_scaled, y_train)
+    pred_temp = knn_temp.predict(X_test_scaled)
+    acc = accuracy_score(y_test, pred_temp)
+    accuracies.append(acc)
+
+print("\nVplyv hodnoty k na presnosť:")
+for k, acc in zip(k_values, accuracies):
+    print(f"k = {k}: {acc*100:.2f}%")
+
+plt.figure(figsize=(10, 6))
+plt.plot(k_values, [a*100 for a in accuracies], 'o-', linewidth=2, markersize=8)
+plt.axhline(y=accuracies[1]*100, color='r', linestyle='--', 
+            label=f'k=2: {accuracies[1]*100:.2f}%')
+plt.xlabel('Hodnota k')
+plt.ylabel('Presnosť (%)')
+plt.title('Vplyv hodnoty k na presnosť modelu')
+plt.grid(True, alpha=0.3)
+plt.legend()
+plt.xticks(k_values)
+plt.tight_layout()
+plt.show()
+
+=========================================
