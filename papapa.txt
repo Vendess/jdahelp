@@ -21,3 +21,4 @@ print(response.text)
 ***
 
 // papapa.txt // pareg.txt // paregm.txt // pars.txt // paba.txt // paknn.txt
+// paaprio.txt // paknnzhluk.txt // pahierzhluk.txt
