@@ -1,0 +1,51 @@
+Praktická implementácia algoritmu Hierarchického zhlukovania¶
+Algoritmus hierarchického zhlukovania (Hierarchical Clustering) patrí tiež 
+medzi metódy učenia bez učiteľa (unsupervised learning).
+
+===================================
+
+iris = sns.load_dataset("iris")
+iris.head() 
+# Vytvorenie irisSample, ktora bude obsahovat 40 nahodnych riadkov z dat iris
+irisSample = iris.sample(40, random_state=25)
+
+irisSample.head()
+
+===================================
+
+Oddelenie cieľovej premennej
+Keďže hierarchické zhlukovanie je tiež unsupervised learning, stĺpec 
+species si uložíme bokom a odstránime ho z dát, ktoré použijeme na zhlukovanie.
+
+===================================
+
+#kedze su nahodne vybrate riadky, odlozim si aktualne hodnoty Species do samostatnej premennej a dropnem Species pre pouzite v zhlukovani
+irisSampleSpecies = irisSample['species']
+irisSample.drop(['species'],axis=1,inplace=True)
+
+====================================
+
+# Do premennej hc ulozime vysledky hierarchickeho zhlukovania z dat irisSample 
+# Algoritmus ma brat vzdialenost medzi zhlukmi ako priemer vzdialenosti bodov v jednom zhluku a bodov v inom zhluku
+from sklearn.cluster import AgglomerativeClustering
+hc = AgglomerativeClustering(n_clusters = 3, linkage = 'average').fit(irisSample)
+
+====================================
+
+#Vykreslenie dendrogramu
+import scipy.cluster.hierarchy as shc
+dend = shc.dendrogram(shc.linkage(irisSample, method='average'))
+plt.axhline(y=2, c='k')
+plt.show()
+
+====================================
+
+#Priradenie zhlukov k dátam a porovnanie so skutočnými druhmi
+# Do dat irisSample pridame stlpec groups, ktory bude obsahovat ID ziskanych zhlukov
+irisSample['groups'] = hc.labels_
+irisSample
+
+# vytvorenie kontingencnej tabulky porovnavajucej hodnoty Species a priradenie k zhluku
+pd.crosstab(irisSampleSpecies, irisSample['groups'])
+
+====================================
