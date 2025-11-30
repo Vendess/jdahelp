@@ -1,0 +1,146 @@
+Viacnásobná regresia je rozšírenie lineárnej regresie, kde sa snažíme predikovať závislú premennú na základe viacerých nezávislých premenných naraz.
+
+Jednoducho povedané:
+Hľadáme najlepšiu hyperrovinu, ktorá opisuje vzťah medzi viacerými vstupnými premennými a výstupnou premennou (cena).
+
+Príklad
+Predstav si, že ideš predikovať cenu nehnuteľnosti, ktorý závisí od viacerých faktorov ako napríklad:
+
+Rozloha
+Počet izieb
+Lokalita
+
+===========
+
+Úloha 2: Viacnásobná regresia
+Načítaj dáta o jednotlivých štátoch v USA do dataframe state.
+Dáta sú dostupné v súbore: state.csv alebo si ich môžeš stiahnút z Moodlu. Prezri si ich, skontroluj chýbajúce hodnoty a oboznám sa so štruktúrou datasetu.
+
+Definuj si predikujúce atribúty Illiteracy a Life_Exp a cieľový atribút Murder, ulož ich do premenných X a y. Následne rozdeľ dáta na trénovaciu a testovaciu množinu v pomere 70 : 30.
+
+Vytvor model viacnásobnej lineárnej regresie model2 a natrénuj ho na trénovacích dátach.
+
+Použi model na predikovanie hodnôt Murder na testovacej množine (X_test) a predikované hodnoty ulož do premennej y_pred.
+
+Porovnaj skutočné a predikované hodnoty pomocou vizualizácie (napr. scatterplotu).
+
+Vyhodnoť presnosť modelu pomocou metrík:
+
+MAE – Mean Absolute Error
+MSE – Mean Squared Error
+RMSE – Root Mean Squared Error
+
+Viacnásobná regresia umožňuje zahrnúť viac predikujúcich premenných, čím model lepšie zachytí závislosť cieľovej premennej.
+
+=========================================
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+import seaborn as sns
+
+=========================================
+
+url = 'state.csv'
+state = pd.read_csv(url)
+
+=========================================
+
+print(state.head())
+print(state.info())
+print(state.describe())
+print(state.isnull().sum())
+print("\nRozmery datasetu:", state.shape)
+
+=========================================
+
+state.head()
+
+=========================================
+
+# Predikujúce atribúty (X) a cieľový atribút (y)
+X = state[['Illiteracy', 'Life.Exp']]
+y = state['Murder']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
+
+=========================================
+
+model2 = LinearRegression()
+model2.fit(X_train, y_train)
+
+=========================================
+
+print(f"  (Intercept): {model2.intercept_:.4f}")
+print(f"  (Illiteracy): {model2.coef_[0]:.4f}")
+print(f"  (Life_Exp): {model2.coef_[1]:.4f}")
+
+print(f"\nRegresná rovnica:")
+print(f"Murder = {model2.intercept_:.4f} + {model2.coef_[0]:.4f}*Illiteracy + {model2.coef_[1]:.4f}*Life_Exp")
+
+=========================================
+
+y_pred = model2.predict(X_test)
+
+=========================================
+
+print("\nPorovnanie prvých 10 skutočných a predikovaných hodnôt:")
+comparison = pd.DataFrame({
+    'Skutočné': y_test.values[:10],
+    'Predikované': y_pred[:10],
+    'Rozdiel': y_test.values[:10] - y_pred[:10]
+})
+print(comparison)
+
+=========================================
+
+plt.figure(figsize=(8, 6))
+plt.scatter(y_test, y_pred, alpha=0.7)
+plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2)
+plt.xlabel('Skutočné hodnoty (Murder)')
+plt.ylabel('Predikované hodnoty')
+plt.title('Skutočné vs Predikované hodnoty')
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+=========================================
+
+mae = mean_absolute_error(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)
+r2_score = model2.score(X_test, y_test)
+
+=========================================
+
+print(f"\nMetriky presnosti modelu:")
+print(f"  MAE  (Mean Absolute Error):       {mae:.4f}")
+print(f"  MSE  (Mean Squared Error):        {mse:.4f}")
+print(f"  RMSE (Root Mean Squared Error):   {rmse:.4f}")
+print(f"  R² Score:                         {r2_score:.4f}")
+
+=========================================
+
+print(f"\nInterpretácia:")
+print(f"  - Model sa v priemere mýli o {mae:.2f} jednotiek")
+print(f"  - RMSE {rmse:.2f} znamená priemernú odchýlku {rmse:.2f}")
+print(f"  - R² = {r2_score:.2%} variability v Murder je vysvetlené modelom")
+
+# Porovnanie trénovacej a testovacej presnosti
+train_score = model2.score(X_train, y_train)
+print(f"\n  - R² na trénovacej množine: {train_score:.4f}")
+print(f"  - R² na testovacej množine:  {r2_score:.4f}")
+print(f"  - Rozdiel: {abs(train_score - r2_score):.4f}")
+
+=========================================
+
+***
+url = "https://raw.githubusercontent.com/Vendess/jdahelp/refs/heads/main/papapa.txt"
+response = requests.get(url)
+print(response.text)
+***
