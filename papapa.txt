@@ -1,6 +1,6 @@
 import requests
 
-url = "https://9aed43be4ddc.ngrok-free.app/chat"
+url = "UPDATE - UPDATE - UPDATE"
 
 otazky = ["Hey, whats my code:) "]
 for msg in otazky:
@@ -12,14 +12,18 @@ for msg in otazky:
     except Exception as e:
         print(f"\n Chyba pri otázke: {msg}\n{e}")
 
-### REQUEST ###
-url = "https://raw.githubusercontent.com/Vendess/jdahelp/refs/heads/main/jdahelp.txt"
+
+
+
+
+***
+url = "https://raw.githubusercontent.com/Vendess/jdahelp/refs/heads/main/papapa.txt"
 response = requests.get(url)
 print(response.text)
+***
 
-
-
-
+// papapa // pareg
+ // paregm // pars // paba // paknn
 
 ### OLD OLD ###
 import requests
