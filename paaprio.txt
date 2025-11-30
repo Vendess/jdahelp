@@ -1,0 +1,78 @@
+Algoritmus Apriori patrí medzi metódy dátového dolovania (data mining), ktoré 
+sa používajú na hľadanie vzorov správania v transakčných dátach – napr. v košíkoch 
+zákazníkov (tzv. market basket analysis).
+
+=========================================
+
+!pip install mlxtend
+
+=========================================
+
+from mlxtend.preprocessing import TransactionEncoder
+from mlxtend.frequent_patterns import apriori, association_rules
+
+# Jednoduchý dataset (zoznam nákupov)
+transactions = [
+    ['chlieb', 'maslo', 'mlieko'],
+    ['chlieb', 'vajcia'],
+    ['mlieko', 'vajcia', 'maslo'],
+    ['chlieb', 'mlieko', 'vajcia', 'maslo'],
+    ['chlieb', 'mlieko', 'vajcia'],
+    ['maslo', 'džem', 'chlieb'],
+    ['mlieko', 'cereálie'],
+    ['cereálie', 'mlieko', 'banán'],
+    ['chlieb', 'sýr', 'šunka'],
+    ['chlieb', 'sýr', 'vajcia'],
+    ['mlieko', 'kava', 'cukor'],
+    ['kava', 'cukor', 'mlieko', 'maslo'],
+    ['cereálie', 'mlieko', 'banán', 'jogurt'],
+    ['jogurt', 'banán'],
+    ['šunka', 'sýr', 'chlieb', 'maslo'],
+    ['vajcia', 'chlieb', 'mlieko', 'maslo'],
+    ['mlieko', 'banán', 'jogurt', 'cereálie'],
+    ['vajcia', 'šunka', 'sýr'],
+    ['chlieb', 'maslo', 'džem', 'kava'],
+    ['mlieko', 'cereálie', 'kava']
+]
+
+# Prevod transakcií do binárnej podoby
+# Každý riadok = jedna transakcia, každý stĺpec = prítomnosť produktu (True/False)
+te = TransactionEncoder()
+te_ary = te.fit(transactions).transform(transactions)
+df = pd.DataFrame(te_ary, columns=te.columns_)
+df.head()
+
+=========================================
+
+# Výpočet častých množín položiek (min_support = 0.2 znamená, že sa vyskytujú aspoň v 20 % transakcií)
+frequent_itemsets = apriori(df, min_support=0.2, use_colnames=True)
+print(frequent_itemsets)
+
+=========================================
+
+# Generovanie asociačných pravidiel
+rules = association_rules(frequent_itemsets, metric="lift", min_threshold=1)
+print(rules[['support', 'confidence', 'lift']])
+
+=========================================
+
+#Vizualizácia vzťahov medzi pravidlami
+rules['antecedents_str'] = rules['antecedents'].apply(lambda x: ', '.join(list(x)))
+rules['consequents_str'] = rules['consequents'].apply(lambda x: ', '.join(list(x)))
+
+top_ants = rules.groupby('antecedents_str')['support'].sum().nlargest(10).index
+top_cons = rules.groupby('consequents_str')['support'].sum().nlargest(10).index
+
+filtered = rules[(rules['antecedents_str'].isin(top_ants)) &
+                 (rules['consequents_str'].isin(top_cons))]
+
+heatmap_data = filtered.pivot(
+    index='antecedents_str', columns='consequents_str', values='confidence')
+
+plt.figure(figsize=(12, 8))
+sns.heatmap(heatmap_data, annot=True, cmap='YlGnBu',
+            linewidths=0.5, cbar_kws={'label': 'Confidence'})
+plt.title('Heatmap of Confidence for Top Association Rules')
+plt.xlabel('Consequents')
+plt.ylabel('Antecedents')
+plt.show()
