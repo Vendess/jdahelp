@@ -1,0 +1,89 @@
+Zhlukovanie (clustering) je deskriptívna metóda dolovania dát (modelovania), ktorej cieľom je rozdeliť 
+objekty do skupín (tzv. zhlukov/klastrov) tak, aby si boli objekty v rámci jednej skupiny čo najpodobnejšie a zároveň 
+odlišné od objektov v iných skupinách. Ide o nekontrolovaný typ učenia, čo v preklade znamená, že vstupné dáta nemajú 
+informáciu o rozdelení do tried a samotný algoritmus sa snaží navrhnúť rozdelenie do tried (zhlukov).
+
+Reminder:
+pri klasifikácii už dopredu poznáme triedu (napr. „schválená“ vs. „zamietnutá“ žiadosť),
+pri zhlukovaní kategórie nepoznáme – snažíme sa ich objaviť na základe dát.
+
+Príklad:
+Predstav si, že máš databázu zákazníkov e-shopu:
+zákazník A: kupuje hlavne lacnejšie veci, objednáva často, nízka suma na objednávku
+zákazník B: nakupuje zriedkavo, ale kupuje drahé produkty
+zákazník C: kupuje stredne drahé produkty, objednáva pravidelne
+
+Ak tieto dáta zanalyzujeme, algoritmus zhlukovania by mohol automaticky vytvoriť 3 skupiny zákazníkov podľa ich nákupného správania.
+Takto získané skupiny môžeme ďalej využiť napríklad pri cielenom marketingu alebo pri návrhu zľavových kampaní.
+
+V rámci zhlukovania na tomto cvičení sa zameriame na algoritmy:
+K-means (algoritmus založený na vzdialenosti od centroidov),
+Hierarchické zhlukovanie (postupné spájanie alebo delenie skupín na základe podobnosti).
+
+===========
+
+K-means zhlukovanie
+K-means je jeden z najpopulárnejších algoritmov zhlukovania, ktorý sa snaží rozdeliť dáta do K zhlukov na základe podobnosti.
+Každý zhluk je reprezentovaný centroidom – stredom skupiny, ktorý sa vypočíta ako priemer všetkých bodov patriacich do daného zhluku.
+
+Ako K-Means funguje:
+1. Inicializácia zhlukov - Vyberie sa počet zhlukov K (napr. 2 alebo 3).
+2. Algoritmus náhodne zvolí počiatočné centroidy.
+3. Každý bod sa priradí k najbližšiemu centroidu v zmysle minimálnej vzdialenosti alebo maximálnej podobnosti.
+4. Vypočítajú sa nové centroidy.
+5. Kroky 3–4 sa opakujú, kým sa centroidy „ustália“, respektíve keď sa splní ukončovacia podmienka. (Bol dosiahnutý daný počet iterácií alebo keď je chybová funkcia menšia ako zvolený prah)
+
+===========
+
+Praktická implementácia algoritmu K-Means
+
+Algoritmus K-Means patrí medzi metódy učenia bez učiteľa (unsupervised learning).
+Jeho cieľom je rozdeliť dáta do k klastrov (zhlukov) tak, aby si boli prvky v rámci 
+jedného klastru čo najviac podobné a medzi klastrami/zhlukmi čo najviac odlišné.
+Nasledujúce body ťa prevedú praktickou implementáciou tohto algoritmu v jazyku Python tak sa sústreď, pýtaj sa a spúšťaj kód.
+
+=========================================
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+import numpy as np
+iris = sns.load_dataset("iris")
+iris.head() 
+
+=========================================
+
+Species = iris['species']
+iris = iris.drop(['species'], axis=1)
+iris.head()
+
+=========================================
+
+#trenovanie modelu k=3 pre 3 druhy kvetov
+kmeans_results = KMeans(n_clusters=3, random_state=42)
+kmeans_results.fit(iris)
+
+=========================================
+
+# Vytvorenie kontingencnej tabulky, ktora porovnava hodnoty Species a ziskane klastre
+tbl = pd.crosstab(Species, kmeans_results.predict(iris))
+tbl
+
+=========================================
+
+# Vypis centroidov + vytvorenie grafu, v ktorom su znazornene atributy Sepal.Length a Sepal.Width, body su zafarbene podla klastrov
+centroids = kmeans_results.cluster_centers_
+print("Centroidy klastrov:\n", centroids)
+
+plt.scatter(iris['sepal_length'], iris['sepal_width'], 
+            c=kmeans_results.labels_, s=50, alpha=0.5)
+# Pridanie bodov do grafu, ktore znazornuju centroidy
+# np.unique(kmeans_results.labels_) da rovnaku farbu pre stred ako jeho body, ale vyraznejsie je mozno zvolit si farby napr. ['r','b','k'], alebo dat len jednu napr. 'b' 
+plt.scatter(centroids[:,0], centroids[:,1], marker="x", c=['r','b','k'], s=150)
+plt.xlabel("Sepal length")
+plt.ylabel("Sepal width")
+plt.title("K-Means zhlukovanie dát Iris")
+plt.show()
+
+=========================================
