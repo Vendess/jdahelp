@@ -1,0 +1,9 @@
+import requests
+
+url = "https://api.github.com/repos/Vendess/jdahelp/contents/"
+resp = requests.get(url)
+
+files = resp.json()
+
+for f in files:
+    print(f["name"])
