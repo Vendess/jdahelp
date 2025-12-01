@@ -1,8 +1,8 @@
 import requests
 
-url = "kod kod kod" 
+url = "https://9c2dc56e8ad5.ngrok-free.app/chat" 
 
-otazky = [""" kod """]
+otazky = ["""vies mi este raz ukazat riesenie na to cvicenie 6?"""]
 for msg in otazky:
     try:
         r = requests.post(url, json={"prompt": msg}, timeout=40)
@@ -12,7 +12,7 @@ for msg in otazky:
     except Exception as e:
         print(f"\n Chyba pri otázke: {msg}\n{e}")
 
-free
+gl
 
 ***
 url = "https://raw.githubusercontent.com/Vendess/jdahelp/refs/heads/main/papapa.txt"
