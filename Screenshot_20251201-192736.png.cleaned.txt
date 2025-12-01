@@ -1,0 +1,54 @@
+Vo
+19. 27
+V
+LTE
+IIO18
+PA-Pr-06-Modelovanie
+2-3/30
+
+Obsah
+- Vyhodnotenie klasifikácie  
+  - základné prístupy hodnotenia  
+  - vybrané miery hodnotenia, kontingenčná tabuľka vyhodnotenia klasifikácie (confusion matrix)  
+- Zlepšenie klasifikácie  
+- Deskriptívne dolovanie v dátach  
+- Zhlukovanie  
+- Asociačné pravidlá  
+
+Vyhodnotenie modelov klasifikácie
+
+Pre vyhodnotenie sa používa chyba klasifikácie, t. j.  
+podiel chybne klasifikovaných objektov  
+(alebo úspešnosť klasifikácie = podiel správne klasifikovaných objektov).
+
+Pre testovanie chyby klasifikácie sa delí množina na  
+trénovaciu a testovaciu časť ⇒ napr. 70 % ku 30 %  
+náhodne rozdelenej množiny, 80/20, 90/10.  
+Distribúcia príkladov jednotlivých tried by mala byť po  
+rozdelení rovnaká v trénovacej aj testovacej množine.
+
+Zložitejší model pre validáciu
+
+m-násobná krížová validácia (cross-validation) =  
+rozdeli množinu O na m rovnako veľkých podmnožín, následne  
+použije m−1 podmnožín na trénovanie a 1 podmnožinu na  
+testovanie ⇒ výsledný odhad chyby = priemer z m validácií.
+
+Ak rozdelenie nie je úplne náhodné, ale zachováva distribúciu tried  
+⇒ rozstratená krížová validácia (stratified cross-validation), ktorá  
+sa odporúča, ak ju vieme dosiahnuť (máme dostatok dát na jej realizáciu).
+
+Často sa používa napr. 5- alebo 10-násobná krížová validácia.
+
+Kontingenčná tabuľka klasifikácie  
+(confusion matrix)
+
+Kontingenčná tabuľka klasifikácie (confusion matrix):
+
+|                          | V skutočnosti je z danej triedy | V skutočnosti nie je z danej triedy |
+|--------------------------|----------------------------------|--------------------------------------|
+| Klasifikácia príkladu   |                                  |                                      |
+| e-mailu JE SPAM         |                                  |                                      |
+| e-mailu NIE JE SPAM     |                                  |                                      |
+
+(zvyšnú časť tabuľky dopĺňa rozdelenie na správne a nesprávne klasifikované príklady)
