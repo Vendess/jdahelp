@@ -1,6 +1,6 @@
 import requests
 
-url = "https://9c2dc56e8ad5.ngrok-free.app/chat" 
+url = "https://7b4bdc8db3d7.ngrok-free.app/chat" 
 
 otazky = ["""vies mi este raz ukazat riesenie na to cvicenie 6?"""]
 for msg in otazky:
