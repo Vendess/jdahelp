@@ -1,0 +1,92 @@
+Súbor:  
+`winequality-red.csv` dostupný na  
+https://archive.ics.uci.edu/ml/datasets/wine+quality  
+
+Popis jednotlivých atribútov:
+
+- **fixed acidity**  
+  obsah niektorých kyselín vo víne
+
+- **volatile acidity**  
+  obsah prchavých kyselín
+
+- **citric acid**  
+  koncentrácia citrónovej (citrátovej) kyseliny
+
+- **residual sugar**  
+  množstvo zvyškového (reziduálneho) cukru, ktorý zostal vo víne po fermentácii
+
+- **chlorides**  
+  obsah solí vo víne
+
+- **free sulfur dioxide**  
+  množstvo voľného SO₂
+
+- **total sulfur dioxide**  
+  množstvo SO₂ (v malých množstvách nedetegovateľný vo všetkých koncentráciách, vplyv na chuť vína)
+
+- **density**  
+  hustota (pomer hustoty vína k hustote vody)
+
+- **pH**  
+  charakterizuje kyslosť / zásaditosť vína, rozsah približne od (veľmi kyslé) pH 0 po (veľmi zásadité).  
+  Väčšina vín dosahuje hodnoty pH ≈ 3 – 4.
+
+- **sulphates**  
+  množstvo aditív (napr. antioxidantov), ktoré je merateľné pomocou množstva sulfátov
+
+- **alcohol**  
+  množstvo alkoholu vo víne
+
+- **quality**  
+  cieľový atribút – výsledná „známka“ charakterizujúca kvalitu vína; nadobúda celé hodnoty 0 – 10
+
+
+---
+
+### Úlohy
+
+1. Správne načítajte a vyplňte dáta (vrátane správneho nastavenia typov atribútov).  
+   DataFrame bude mať názov **`wine`**.
+
+2. Vykreslite stĺpcový graf cieľového atribútu **quality** podľa početnosti výskytu jednotlivých známok kvality.
+
+3. Vytvorte nový DataFrame **`wine1`** ako kópiu `wine`.  
+   Zmeňte cieľový atribút vo `wine1` z pôvodnej numerickej škály na normalizovaný interval ⟨0, 1⟩.
+
+4. Vypíšte korelačnú maticu medzi numerickými atribútmi vo `wine` popisujúcimi:  
+   - hodnoty koncentrácie kyselín  
+   - množstvo SO₂  
+
+5. Rozdeľte príklady vo `wine1` na trénovaciu a testovaciu časť, v pomere **90 : 10**.
+
+6. Vytvorte model lineárnej regresie pre `wine1` (na trénovacej množine z úlohy 5) pre viac predikujúcich atribútov, pričom pre predikovanie (regresiu) normalizovaného atribútu **quality** použite atribúty, ktoré vyberiete nasledovne:  
+   - jeden je **citric acid**,  
+   - zvyšné sú **n** najviac korelované atribúty z úlohy 4.
+
+7. Odpredikujte hodnotu normalizovanej **quality** (na testovacej množine z úlohy 5) a určte metriky **MSE** a **RMSE**.
+
+8. Z pôvodného DataFrame `wine` vytvorte kópiu s názvom **`wine2`**.
+
+9. Navrhnite a realizujte diskretizáciu cieľového atribútu **quality** vo `wine2` do troch kategórií s hodnotami:  
+   - `great`  
+   - `medium`  
+   - `bad`  
+   pričom použijete **ekvidistančnú diskretizáciu** (rovnaká šírka intervalov).
+
+10. Rozdeľte príklady `wine2` na trénovaciu a testovaciu časť, v pomere **80 : 20**.
+
+11. Naučte **rozhodovací strom** pre `wine2` (na trénovacej množine z úlohy 10), predikujúci kvalitu podľa:  
+    - množstva alkoholu (**alcohol**),  
+    - pH,  
+    - sulphates,  
+    - residual sugar (zostatkové množstvo cukru).
+
+12. Vykreslite naučený rozhodovací strom.
+
+13. Vyhodnoťte vytvorený model pre `wine2` (na testovacej množine z úlohy 10), a to podľa metrík:  
+    - **accuracy**  
+    - **precision**  
+    - **recall**  
+    - **F1**  
+    vrátane vypísania **confusion matrix**.
